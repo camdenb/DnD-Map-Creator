@@ -9,7 +9,11 @@ local bGridLines = true
 local drawingMode = false
 local draggingMode = false
 
-local token1 = { x = scale * 10, y = scale * 10, scale = 2 }
+local selectedToken = nil
+
+local token1 = { x = scale * 10, y = scale * 10, scale = 4, color = {100, 100, 255, 150}}
+local token2 = { x = scale * 15, y = scale * 15, scale = 4, color = {100, 255, 255, 150}}
+local tokens = { token1, token2 }
 
 love.graphics.setLineWidth(1)
 love.graphics.setLineStyle('rough')
@@ -49,12 +53,19 @@ function love.draw(dt)
 		end
 	end
 
-	love.graphics.setColor(100, 100, 255, 150)
-	love.graphics.rectangle('fill', token1.x, token1.y, scale * token1.scale, scale * token1.scale)
+	for i,token in ipairs(tokens) do
+		love.graphics.setColor(token.color)
+		love.graphics.rectangle('fill', token.x, token.y, scale * token.scale, scale * token.scale)
+	end
 
 end
 
 function love.update(dt)
+
+	if draggingMode then
+		selectedToken.x = love.mouse.getX()
+		selectedToken.y = love.mouse.getY()
+	end
 
 	if drawingMode then
 		draw(love.mouse.getX(), love.mouse.getY(), false)
@@ -117,14 +128,31 @@ function highlight(x, y)
 end
 
 function love.mousepressed(x, y, button)
-	if coordInRect(x, y, token1.x, token1.y, token1.scale * scale, token1.scale * scale) then
-		draggingMode = true
-		drawingMode = false
-		print('IN')
-	else
-		draw(x, y)
-		drawingMode = true
+	for i,token in ipairs(tokens) do
+			if coordInRect(x, y, token.x, token.y, token.scale * scale, token.scale * scale) then
+				selectedToken = token
+				draggingMode = true
+				drawingMode = false
+				break
+			end
+		end
+end
+
+function love.mousereleased()
+	drawingMode = false
+	exitDraggingMode()
+end
+
+function exitDraggingMode()
+	draggingMode = false
+	if selectedToken ~= nil then
+		selectedToken.x = roundToMultiple(selectedToken.x, scale)
+		selectedToken.y = roundToMultiple(selectedToken.y, scale)
 	end
+end
+
+function roundToMultiple(num, mult)
+	return math.floor(num / mult) * mult
 end
 
 function coordInRect(x, y, rx, ry, rw, rh)
@@ -135,11 +163,7 @@ function coordInRect(x, y, rx, ry, rw, rh)
 	end
 end
 
-function love.mousereleased()
-	drawingMode = false
-	draggingMode = false
-	print(draggingMode)
-end
+
 
 
 
