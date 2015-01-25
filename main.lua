@@ -1,62 +1,28 @@
-local scale = 15;
-local gridWidth = 100;
-local gridHeight = 100;
+class = require 'lib/middleclass'
 
-local grid = {}
+require 'Grid'
+require 'Token'
+require 'TokenFactory'
 
-local bGridLines = true
+
 
 local drawingMode = false
 local draggingMode = false
 
 local selectedToken = nil
 
-local token1 = { x = scale * 10, y = scale * 10, scale = 4, color = {100, 100, 255, 150}}
-local token2 = { x = scale * 15, y = scale * 15, scale = 4, color = {100, 255, 255, 150}}
-local tokens = { token1, token2 }
-
-love.graphics.setLineWidth(1)
-love.graphics.setLineStyle('rough')
-love.graphics.setBackgroundColor(230, 230, 230)
-
 function love.load()
-	initGrid()
+	Grid = Grid:new()
+	TokenFactory = TokenFactory:new()
+	TokenFactory:addToken(10, 100, 2, {255, 255, 0}, 'token1')
 end
 
-function initGrid()
-	for x = 1, gridWidth, 1 do
 
-		grid[x] = {}
-
-		for y = 1, gridHeight, 1 do
-
-			grid[x][y] = false
-			
-		end
-	end
-end
 
 function love.draw(dt)
 
-	for x = scale, gridWidth * scale, scale do
-		for y = scale, gridHeight * scale, scale do
-			if math.floor(love.mouse.getX() / scale) == math.floor(x / scale) and math.floor(love.mouse.getY() / scale) == math.floor(y / scale) then
-				love.graphics.setColor(255, 0, 0, 30)
-				love.graphics.rectangle('fill', x, y, scale, scale)
-			elseif grid[x / scale][y / scale] == true then
-				love.graphics.setColor(50, 50, 50)
-				love.graphics.rectangle('fill', x, y, scale, scale)
-			elseif grid[x / scale][y / scale] == false and bGridLines then
-				love.graphics.setColor(100, 100, 100, 50)
-				love.graphics.rectangle('line', x, y, scale, scale)
-			end
-		end
-	end
-
-	for i,token in ipairs(tokens) do
-		love.graphics.setColor(token.color)
-		love.graphics.rectangle('fill', token.x, token.y, scale * token.scale, scale * token.scale)
-	end
+	Grid:draw()
+	TokenFactory:draw(Grid)
 
 end
 
@@ -88,48 +54,61 @@ function love.keypressed(key, isrepeat)
 		bGridLines = not bGridLines
 	elseif key == 'n' then
 		clearGrid()
-	elseif key == '-' and scale > 1 then
-		scale = scale - 1
+	elseif key == '-' and Grid:getScale() > 1 then
+		Grid:addToScale(-1)
+		realignTokens()
 	elseif key == '=' then
-		scale = scale + 1
+		Grid:addToScale(1)
+		realignTokens()
 	end
 end
 
+function realignTokens()
+	for i, token in ipairs(TokenFactory:getTokens()) do
+		alignTokenToGrid(token)
+	end
+end
+
+function alignTokenToGrid(token)
+	token.x = roundToMultiple(token.x, Grid:getScale())
+	token.y = roundToMultiple(token.y, Grid:getScale())
+end
+
 function clearGrid()
-	for x = 1, gridWidth, 1 do
+	for x = 1, Grid.gridWidth, 1 do
 
-		grid[x] = {}
+		Grid.grid[x] = {}
 
-		for y = 1, gridHeight, 1 do
+		for y = 1, Grid.gridHeight, 1 do
 
-			grid[x][y] = false
+			Grid.grid[x][y] = false
 			
 		end
 	end
 end
 
 function coordToGrid(x, y)
-	if x < scale or y < scale then
+	if x < Grid:getScale() or y < Grid:getScale() then
 		return nil
 	end
-	return grid[math.floor(x / scale)][math.floor(y / scale)]
+	return Grid.grid[math.floor(x / Grid:getScale())][math.floor(y / Grid:getScale())]
 end
 
 function draw(x, y, erase)
 	if coordToGrid(x, y) ~= nil then
-		grid[math.floor(x / scale)][math.floor(y / scale)] = not erase
+		Grid.grid[math.floor(x / Grid:getScale())][math.floor(y / Grid:getScale())] = not erase
 	end
 end
 
 function highlight(x, y)
 	if coordToGrid(x, y) ~= nil then
-		grid[math.floor(x / scale)][math.floor(y / scale)] = "highlighted"
+		Grid.grid[math.floor(x / Grid:getScale())][math.floor(y / Grid:getScale())] = "highlighted"
 	end
 end
 
 function love.mousepressed(x, y, button)
-	for i,token in ipairs(tokens) do
-			if coordInRect(x, y, token.x, token.y, token.scale * scale, token.scale * scale) then
+	for i,token in ipairs(TokenFactory:getTokens()) do
+			if coordInRect(x, y, token.x, token.y, token.scale * Grid:getScale(), token.scale * Grid:getScale()) then
 				selectedToken = token
 				draggingMode = true
 				drawingMode = false
@@ -146,8 +125,7 @@ end
 function exitDraggingMode()
 	draggingMode = false
 	if selectedToken ~= nil then
-		selectedToken.x = roundToMultiple(selectedToken.x, scale)
-		selectedToken.y = roundToMultiple(selectedToken.y, scale)
+		alignTokenToGrid(selectedToken)
 	end
 end
 
