@@ -1,3 +1,3 @@
 # D&D Map Creator
-### Build map layouts on-the-fly!
-Hopefully in the future I'll write a nice description :)
+Build map layouts on-the-fly!
+![Image of Map Creator](http://i.imgur.com/YzyG37B.jpg)
