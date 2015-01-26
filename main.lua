@@ -8,37 +8,45 @@ require 'TokenFactory'
 
 local drawingMode = false
 local draggingMode = false
+local dragDiffX, dragDiffY = 0, 0
 
 local selectedToken = nil
+local hoveredToken = nil
 
 function love.load()
 	Grid = Grid:new()
 	TokenFactory = TokenFactory:new()
-	TokenFactory:addToken(10, 100, 2, {255, 255, 0}, 'token1')
+	TokenFactory:addToken(140, 100, 2, {255, 255, 0}, 'token1')
+	TokenFactory:addToken(200, 150, 2, {0, 125, 0}, 'token2')
 end
-
-
 
 function love.draw(dt)
 
 	Grid:draw()
 	TokenFactory:draw(Grid)
 
+	love.graphics.setColor(0, 0, 0)
+
+	if hoveredToken ~= nil then
+		love.graphics.print(hoveredToken.name, 10, 10)
+	end
+
+	love.graphics.print(love.mouse.getX() .. " " .. love.mouse.getY(), 200, 10)
+
+
 end
 
 function love.update(dt)
 
+	getHoveredToken()
+
 	if draggingMode then
-		selectedToken.x = love.mouse.getX()
-		selectedToken.y = love.mouse.getY()
+		selectedToken.x = love.mouse.getX() - dragDiffX
+		selectedToken.y = love.mouse.getY() - dragDiffY
 	end
 
 	if drawingMode then
 		draw(love.mouse.getX(), love.mouse.getY(), false)
-	end
-
-	if love.keyboard.isDown('lshift') then
-
 	end
 
 	if love.keyboard.isDown('d') then
@@ -106,20 +114,40 @@ function highlight(x, y)
 	end
 end
 
-function love.mousepressed(x, y, button)
+function getHoveredToken()
+
 	for i,token in ipairs(TokenFactory:getTokens()) do
-			if coordInRect(x, y, token.x, token.y, token.scale * Grid:getScale(), token.scale * Grid:getScale()) then
-				selectedToken = token
-				draggingMode = true
-				drawingMode = false
-				break
-			end
+		if coordInRect(love.mouse.getX(), love.mouse.getY(), token.x, token.y, token.scale * Grid:getScale(), token.scale * Grid:getScale()) then
+			hoveredToken = token
+			return token
 		end
+	end
+
+	hoveredToken = nil
+	return nil
+
+end
+
+function love.mousepressed(x, y, button)
+	if getHoveredToken() ~= nil then
+		selectedToken = getHoveredToken()
+		enterDraggingMode(x, y)
+		drawingMode = false
+	end
 end
 
 function love.mousereleased()
 	drawingMode = false
 	exitDraggingMode()
+end
+
+function enterDraggingMode(mouse_x, mouse_y)
+	mouse_x = mouse_x or 0
+	mouse_y = mouse_y or 0
+	draggingMode = true
+
+	dragDiffX = mouse_x - selectedToken.x
+	dragDiffY = mouse_y - selectedToken.y
 end
 
 function exitDraggingMode()
@@ -130,7 +158,7 @@ function exitDraggingMode()
 end
 
 function roundToMultiple(num, mult)
-	return math.floor(num / mult) * mult
+	return math.floor((num / mult) + 0.5) * mult
 end
 
 function coordInRect(x, y, rx, ry, rw, rh)
