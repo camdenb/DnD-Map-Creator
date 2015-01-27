@@ -11,6 +11,9 @@ end
 
 function TokenFactory:addToken(x, y, scale, color, name)
 
+	x = getWorldCoords(x, 'X')
+	y = getWorldCoords(y, 'Y')
+
 	local token = Token:new(x, y, scale, color, name)
 
 	table.insert(self.tokens, token)
@@ -29,3 +32,4 @@ function TokenFactory:draw(grid)
 		love.graphics.rectangle('fill', token.x, token.y, grid:getScale() * token.scale, grid:getScale() * token.scale)
 	end
 end
+

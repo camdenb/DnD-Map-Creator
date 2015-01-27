@@ -1,8 +1,11 @@
 class = require 'lib/middleclass'
+Camera = require 'lib/hump-master/camera'
 
 require 'Grid'
 require 'Token'
 require 'TokenFactory'
+require 'ModeManager'
+require 'HelperFunctions'
 
 
 
@@ -15,15 +18,31 @@ local hoveredToken = nil
 
 function love.load()
 	Grid = Grid:new()
+
+	ModeManager = ModeManager:new()
+
 	TokenFactory = TokenFactory:new()
-	TokenFactory:addToken(140, 100, 2, {255, 255, 0}, 'token1')
-	TokenFactory:addToken(200, 150, 2, {0, 125, 0}, 'token2')
+	
+
+	camera = Camera()
+
+	TokenFactory:addToken(10, 20, 2, {255, 255, 0}, 'token1')
+	TokenFactory:addToken(100, 200, 2, {0, 125, 0}, 'token2')
+
+	realignTokens()
+
 end
 
 function love.draw(dt)
 
+	camera:attach()
+
 	Grid:draw()
 	TokenFactory:draw(Grid)
+
+	camera:detach()
+
+	-----------------------------------------
 
 	love.graphics.setColor(0, 0, 0)
 
@@ -31,28 +50,30 @@ function love.draw(dt)
 		love.graphics.print(hoveredToken.name, 10, 10)
 	end
 
-	love.graphics.print(love.mouse.getX() .. " " .. love.mouse.getY(), 200, 10)
+	love.graphics.print(MOUSE_X .. " " .. MOUSE_Y, 200, 10)
 
 
 end
 
 function love.update(dt)
 
+	MOUSE_X, MOUSE_Y = camera:mousepos()
+
 	getHoveredToken()
 
-	if draggingMode then
-		selectedToken.x = love.mouse.getX() - dragDiffX
-		selectedToken.y = love.mouse.getY() - dragDiffY
+	if ModeManager:isMode('Dragging') then
+		selectedToken.x = MOUSE_X - dragDiffX
+		selectedToken.y = MOUSE_Y - dragDiffY
 	end
 
-	if drawingMode then
-		draw(love.mouse.getX(), love.mouse.getY(), false)
+	if ModeManager:isMode('Drawing') then
+		draw(MOUSE_X, MOUSE_Y, false)
 	end
 
 	if love.keyboard.isDown('d') then
-		draw(love.mouse.getX(), love.mouse.getY(), false)
+		draw(MOUSE_X, MOUSE_Y, false)
 	elseif love.keyboard.isDown('e') then
-		draw(love.mouse.getX(), love.mouse.getY(), true)
+		draw(MOUSE_X, MOUSE_Y, true)
 	end
 
 end
@@ -62,44 +83,13 @@ function love.keypressed(key, isrepeat)
 		bGridLines = not bGridLines
 	elseif key == 'n' then
 		clearGrid()
-	elseif key == '-' and Grid:getScale() > 1 then
-		Grid:addToScale(-1)
-		realignTokens()
+	elseif key == '-' then
+		--camera:lookAt(camera:mousepos())
+		camera:zoom(0.9)
 	elseif key == '=' then
-		Grid:addToScale(1)
-		realignTokens()
+		--camera:lookAt(camera:mousepos())
+		camera:zoom(1.1)
 	end
-end
-
-function realignTokens()
-	for i, token in ipairs(TokenFactory:getTokens()) do
-		alignTokenToGrid(token)
-	end
-end
-
-function alignTokenToGrid(token)
-	token.x = roundToMultiple(token.x, Grid:getScale())
-	token.y = roundToMultiple(token.y, Grid:getScale())
-end
-
-function clearGrid()
-	for x = 1, Grid.gridWidth, 1 do
-
-		Grid.grid[x] = {}
-
-		for y = 1, Grid.gridHeight, 1 do
-
-			Grid.grid[x][y] = false
-			
-		end
-	end
-end
-
-function coordToGrid(x, y)
-	if x < Grid:getScale() or y < Grid:getScale() then
-		return nil
-	end
-	return Grid.grid[math.floor(x / Grid:getScale())][math.floor(y / Grid:getScale())]
 end
 
 function draw(x, y, erase)
@@ -114,60 +104,36 @@ function highlight(x, y)
 	end
 end
 
-function getHoveredToken()
-
-	for i,token in ipairs(TokenFactory:getTokens()) do
-		if coordInRect(love.mouse.getX(), love.mouse.getY(), token.x, token.y, token.scale * Grid:getScale(), token.scale * Grid:getScale()) then
-			hoveredToken = token
-			return token
-		end
-	end
-
-	hoveredToken = nil
-	return nil
-
-end
-
 function love.mousepressed(x, y, button)
 	if getHoveredToken() ~= nil then
 		selectedToken = getHoveredToken()
-		enterDraggingMode(x, y)
-		drawingMode = false
+		enterDraggingMode(MOUSE_X, MOUSE_Y)
 	end
 end
 
 function love.mousereleased()
-	drawingMode = false
+	ModeManager:setMode('none')
 	exitDraggingMode()
 end
 
 function enterDraggingMode(mouse_x, mouse_y)
 	mouse_x = mouse_x or 0
 	mouse_y = mouse_y or 0
-	draggingMode = true
+
+	ModeManager:setMode('Dragging')
 
 	dragDiffX = mouse_x - selectedToken.x
 	dragDiffY = mouse_y - selectedToken.y
 end
 
 function exitDraggingMode()
-	draggingMode = false
+	ModeManager:setMode('none')
 	if selectedToken ~= nil then
 		alignTokenToGrid(selectedToken)
 	end
 end
 
-function roundToMultiple(num, mult)
-	return math.floor((num / mult) + 0.5) * mult
-end
 
-function coordInRect(x, y, rx, ry, rw, rh)
-	if x >= rx and x <= rx + rw and y >= ry and y <= ry + rh then
-		return true
-	else
-		return false
-	end
-end
 
 
 
