@@ -24,6 +24,7 @@ end
 
 function ModeManager:setMode(name)
 	self.currentMode = ModeManager:getModeByName(name)
+	print('current mode: ' .. ModeManager:getCurrentMode())
 end
 
 function ModeManager:getModeByName(name)

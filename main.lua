@@ -17,6 +17,9 @@ local selectedToken = nil
 local hoveredToken = nil
 
 function love.load()
+
+	love.window.setMode(500, 500)
+
 	Grid = Grid:new()
 
 	ModeManager = ModeManager:new()
@@ -24,10 +27,10 @@ function love.load()
 	TokenFactory = TokenFactory:new()
 	
 
-	camera = Camera()
+	camera = Camera(0, 0)
 
-	TokenFactory:addToken(10, 20, 2, {255, 255, 0}, 'token1')
-	TokenFactory:addToken(100, 200, 2, {0, 125, 0}, 'token2')
+	TokenFactory:addToken(10, 10, 3, {255, 255, 0}, 'token1')
+	TokenFactory:addToken(250, 250, 1, {0, 125, 0}, 'token2')
 
 	realignTokens()
 
@@ -68,12 +71,15 @@ function love.update(dt)
 
 	if ModeManager:isMode('Drawing') then
 		draw(MOUSE_X, MOUSE_Y, false)
+	elseif ModeManager:isMode('Erasing') then
+		draw(MOUSE_X, MOUSE_Y, true)
 	end
 
+
 	if love.keyboard.isDown('d') then
-		draw(MOUSE_X, MOUSE_Y, false)
+		--draw(MOUSE_X, MOUSE_Y, false)
 	elseif love.keyboard.isDown('e') then
-		draw(MOUSE_X, MOUSE_Y, true)
+		--draw(MOUSE_X, MOUSE_Y, true)
 	end
 
 end
@@ -81,6 +87,10 @@ end
 function love.keypressed(key, isrepeat)
 	if key == 'g' then 
 		bGridLines = not bGridLines
+	elseif key == 'd' then
+		ModeManager:setMode('Drawing')
+	elseif key == 'e' then
+		ModeManager:setMode('Erasing')
 	elseif key == 'n' then
 		clearGrid()
 	elseif key == '-' then
@@ -92,15 +102,24 @@ function love.keypressed(key, isrepeat)
 	end
 end
 
+function love.keyreleased(key, isrepeat)
+	if key == 'd' and not ModeManager:isMode('Dragging') then
+		ModeManager:setMode('none')
+	elseif key == 'e' then
+		ModeManager:setMode('none')
+	end
+end
+
+
 function draw(x, y, erase)
 	if coordToGrid(x, y) ~= nil then
-		Grid.grid[math.floor(x / Grid:getScale())][math.floor(y / Grid:getScale())] = not erase
+		Grid.grid[numToGrid(x)][numToGrid(y)] = not erase
 	end
 end
 
 function highlight(x, y)
 	if coordToGrid(x, y) ~= nil then
-		Grid.grid[math.floor(x / Grid:getScale())][math.floor(y / Grid:getScale())] = "highlighted"
+		Grid.grid[numToGrid(x)][numToGrid(y)] = "highlighted"
 	end
 end
 

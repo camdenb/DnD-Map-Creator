@@ -21,11 +21,15 @@ function coordInRect(x, y, rx, ry, rw, rh)
 	end
 end
 
+function numToGrid(num)
+	return math.floor(num / Grid:getScale())
+end
+
 function coordToGrid(x, y)
-	if x < Grid:getScale() or y < Grid:getScale() then
+	if numToGrid(x) < Grid.GRID_LOWERBOUND or numToGrid(x) > Grid.GRID_UPPERBOUND or numToGrid(y) < Grid.GRID_LOWERBOUND or numToGrid(y) > Grid.GRID_UPPERBOUND then
 		return nil
 	end
-	return Grid.grid[math.floor(x / Grid:getScale())][math.floor(y / Grid:getScale())]
+	return Grid.grid[numToGrid(x)][numToGrid(y)]
 end
 
 function getHoveredToken()

@@ -5,21 +5,35 @@ function Grid:initialize()
 
 	love.graphics.setLineWidth(1)
 	love.graphics.setLineStyle('rough')
-	love.graphics.setBackgroundColor(230, 230, 230)
+	love.graphics.setBackgroundColor(220, 220, 220)
 
 	self.scale = 15
-	self.gridWidth = 100
-	self.gridHeight = 100
+	self.gridSize = 10
 	self.grid = {}
 	self.bGridLines = true
+	self.GRID_LOWERBOUND = -self.gridSize / 2
+	self.GRID_UPPERBOUND = self.gridSize / 2 - 1
 
 	self:initGrid()
 
 end
 
+function Grid:initGrid()
+	for x = -self.gridSize / 2, self.gridSize / 2 - 1, 1 do
+
+		self.grid[x] = {}
+
+		for y = -self.gridSize / 2, self.gridSize / 2 - 1, 1 do
+
+			self.grid[x][y] = false
+			
+		end
+	end
+end
+
 function Grid:draw()
-	for x = self.scale, self.gridWidth * self.scale, self.scale do
-		for y = self.scale, self.gridHeight * self.scale, self.scale do
+	for x = (-self.gridSize / 2) * self.scale, (self.gridSize / 2 - 1) * self.scale, self.scale do
+		for y = (-self.gridSize / 2) * self.scale, (self.gridSize / 2 - 1) * self.scale, self.scale do
 			local mouseX, mouseY = camera:mousepos()
 
 			if math.floor(mouseX / self.scale) == math.floor(x / self.scale) and math.floor(mouseY / self.scale) == math.floor(y / self.scale) then
@@ -41,23 +55,6 @@ end
 
 function Grid:getScale()
 	return self.scale
-end
-
-function Grid:addToScale(num)
-	self.scale = self.scale + num
-end
-
-function Grid:initGrid()
-	for x = 1, self.gridWidth, 1 do
-
-		self.grid[x] = {}
-
-		for y = 1, self.gridHeight, 1 do
-
-			self.grid[x][y] = false
-			
-		end
-	end
 end
 
 function Grid:clearGrid()
