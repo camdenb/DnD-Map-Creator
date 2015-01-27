@@ -4,7 +4,7 @@ local currentID = 0
 
 function Token:initialize(x, y, scale, color, name)
 
-	print('new token')
+	print('New Token: ' .. name)
 
 	self.x = x
 	self.y = y

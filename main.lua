@@ -9,8 +9,6 @@ require 'HelperFunctions'
 
 
 
-local drawingMode = false
-local draggingMode = false
 local dragDiffX, dragDiffY = 0, 0
 
 local selectedToken = nil
@@ -19,6 +17,7 @@ local hoveredToken = nil
 function love.load()
 
 	love.window.setMode(500, 500)
+	love.window.setTitle('Dungeons & Dragons Map Explorer')
 
 	Grid = Grid:new()
 
@@ -62,7 +61,7 @@ function love.update(dt)
 
 	MOUSE_X, MOUSE_Y = camera:mousepos()
 
-	getHoveredToken()
+	hoveredToken = getHoveredToken()
 
 	if ModeManager:isMode('Dragging') then
 		selectedToken.x = MOUSE_X - dragDiffX

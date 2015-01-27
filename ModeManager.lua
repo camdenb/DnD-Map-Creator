@@ -23,8 +23,11 @@ function ModeManager:isMode(nameOfMode)
 end
 
 function ModeManager:setMode(name)
-	self.currentMode = ModeManager:getModeByName(name)
-	print('current mode: ' .. ModeManager:getCurrentMode())
+	local isSame = self.currentMode == ModeManager:getModeByName(name)
+	if not isSame then
+		self.currentMode = ModeManager:getModeByName(name)
+		print('Current Mode: ' .. ModeManager:getCurrentMode())
+	end
 end
 
 function ModeManager:getModeByName(name)

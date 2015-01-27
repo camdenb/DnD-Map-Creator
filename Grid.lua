@@ -3,12 +3,12 @@ Grid = class('Grid')
 function Grid:initialize()
 	print('Grid has been initialized')
 
-	love.graphics.setLineWidth(1)
+	love.graphics.setLineWidth(3)
 	love.graphics.setLineStyle('rough')
 	love.graphics.setBackgroundColor(220, 220, 220)
 
 	self.scale = 15
-	self.gridSize = 10
+	self.gridSize = 50
 	self.grid = {}
 	self.bGridLines = true
 	self.GRID_LOWERBOUND = -self.gridSize / 2

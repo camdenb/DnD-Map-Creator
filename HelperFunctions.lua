@@ -36,12 +36,10 @@ function getHoveredToken()
 
 	for i,token in ipairs(TokenFactory:getTokens()) do
 		if coordInRect(MOUSE_X, MOUSE_Y, token.x, token.y, token.scale * Grid:getScale(), token.scale * Grid:getScale()) then
-			hoveredToken = token
 			return token
 		end
 	end
 
-	hoveredToken = nil
 	return nil
 end
 
