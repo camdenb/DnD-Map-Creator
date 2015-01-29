@@ -45,7 +45,7 @@ function Grid:draw()
 				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
 
 			elseif self.grid[x / self.scale][y / self.scale] == false and bGridLines then
-				love.graphics.setColor(100, 100, 100, 50)
+				love.graphics.setColor(100, 100, 100, 10)
 				love.graphics.rectangle('line', x, y, self.scale, self.scale)
 				
 			end
@@ -58,16 +58,15 @@ function Grid:getScale()
 end
 
 function Grid:clearGrid()
-	for x = 1, self.gridWidth, 1 do
-
-		self.grid[x] = {}
-
-		for y = 1, self.gridHeight, 1 do
-
+	for x = (-self.gridSize / 2), (self.gridSize / 2 - 1), 1 do
+		for y = (-self.gridSize / 2), (self.gridSize / 2 - 1), 1 do
 			self.grid[x][y] = false
-			
 		end
 	end
 end
 
+function Grid:setFilled(x, y, erase)
+	erase = erase or false
+	self.grid[x][y] = not erase
+end
 

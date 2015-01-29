@@ -21,8 +21,16 @@ function coordInRect(x, y, rx, ry, rw, rh)
 	end
 end
 
-function numToGrid(num)
+function numToGrid(num, round)
+	
 	return math.floor(num / Grid:getScale())
+
+	-- if num <= 0 then
+	-- 	return math.floor(num / Grid:getScale())
+	-- else
+	-- 	return math.ceil(num / Grid:getScale())
+	-- end
+
 end
 
 function coordToGrid(x, y)
@@ -49,6 +57,36 @@ function getWorldCoords(num, str)
 		return x
 	elseif str == 'Y' then
 		return y
+	end
+end
+
+function drawLine(sx, sy, ex, ey)
+
+end
+
+function drawRectangle(sx, sy, ex, ey)
+	xjump, yjump = 1, 1
+
+	if(sx > ex) then
+		xjump = -xjump
+	end
+
+	if(sy > ey) then
+		yjump = -yjump
+	end
+
+	local startX, startY = numToGrid(sx), numToGrid(sy)
+	local endX, endY = numToGrid(ex), numToGrid(ey)
+
+
+	for x = startX, endX, xjump do
+		for y = startY, endY, yjump do
+			
+			if x == startX or y == startY or x == endX or y == endY then
+				Grid:setFilled(x, y, false)
+			end
+
+		end
 	end
 end
 

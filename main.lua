@@ -7,7 +7,8 @@ require 'TokenFactory'
 require 'ModeManager'
 require 'HelperFunctions'
 
-
+local startLine
+local sX, sY
 
 local dragDiffX, dragDiffY = 0, 0
 
@@ -52,7 +53,8 @@ function love.draw(dt)
 		love.graphics.print(hoveredToken.name, 10, 10)
 	end
 
-	love.graphics.print(MOUSE_X .. " " .. MOUSE_Y, 200, 10)
+	love.graphics.print(math.floor(MOUSE_X) .. " " .. math.floor(MOUSE_Y), 200, 10)
+	love.graphics.print(numToGrid(MOUSE_X) .. " " .. numToGrid(MOUSE_Y), 200, 25)
 
 
 end
@@ -86,12 +88,21 @@ end
 function love.keypressed(key, isrepeat)
 	if key == 'g' then 
 		bGridLines = not bGridLines
+	elseif key == 'l' then
+		if not startLine then
+			startLine = true
+			sX = MOUSE_X
+			sY = MOUSE_Y
+		else
+			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y)
+			startLine = false
+		end
 	elseif key == 'd' then
 		ModeManager:setMode('Drawing')
 	elseif key == 'e' then
 		ModeManager:setMode('Erasing')
 	elseif key == 'n' then
-		clearGrid()
+		Grid:clearGrid()
 	elseif key == '-' then
 		--camera:lookAt(camera:mousepos())
 		camera:zoom(0.9)
