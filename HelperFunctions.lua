@@ -1,3 +1,10 @@
+function takeScreenshot()
+	scrot = love.graphics.newScreenshot()
+	scrot:encode(os.date('%d-%m_%M-%S') .. '.png', 'png')
+	love.filesystem.write('', scrot)
+end
+
+
 function realignTokens()
 	for i, token in ipairs(TokenFactory:getTokens()) do
 		alignTokenToGrid(token)

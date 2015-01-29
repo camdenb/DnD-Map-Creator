@@ -34,6 +34,8 @@ function love.load()
 
 	realignTokens()
 
+	takeScreenshot()
+
 end
 
 function love.draw(dt)
