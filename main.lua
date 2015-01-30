@@ -13,6 +13,8 @@ local sX, sY
 
 local dragDiffX, dragDiffY = 0, 0
 
+local tokenSnapping = false
+
 local selectedToken = nil
 local hoveredToken = nil
 
@@ -28,12 +30,17 @@ function love.load()
 	TokenFactory = TokenFactory:new()
 	
 
-	camera = Camera(0, 0)
+	camera = Camera((Grid.gridSize / 2) * Grid:getScale(), (Grid.gridSize / 2) * Grid:getScale())
 
 	TokenFactory:addToken(10, 10, 3, {255, 255, 0}, 'token1')
-	TokenFactory:addToken(250, 250, 1, {0, 125, 0}, 'token2')
+	TokenFactory:addToken(250, 250, 2, {0, 125, 0}, 'token2')
 
-	realignTokens()
+	mouseOldX = 0
+	mouseOldY = 0
+
+	if tokenSnapping then
+		realignTokens()
+	end
 
 	takeScreenshot()
 
@@ -80,12 +87,18 @@ function love.update(dt)
 		draw(MOUSE_X, MOUSE_Y, true)
 	end
 
+	-- if love.mouse.isDown('l') then
 
-	if love.keyboard.isDown('d') then
-		--draw(MOUSE_X, MOUSE_Y, false)
-	elseif love.keyboard.isDown('e') then
-		--draw(MOUSE_X, MOUSE_Y, true)
-	end
+	-- 	local diffX = mouseOldX - MOUSE_X
+	-- 	local diffY = mouseOldY - MOUSE_Y
+
+	-- 	--CHANGE COORD SYSTEM TO START AT 0,0 IN TOP LEFT CORNER
+
+	-- 	camera:move(diffX, diffY)
+	-- end
+
+	mouseOldX = MOUSE_X
+	mouseOldY = MOUSE_Y
 
 end
 
@@ -98,7 +111,7 @@ function love.keypressed(key, isrepeat)
 			sX = MOUSE_X
 			sY = MOUSE_Y
 		else
-			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y)
+			drawLine(sX, sY, MOUSE_X, MOUSE_Y)
 			startLine = false
 		end
 	elseif key == 'd' then
@@ -107,6 +120,8 @@ function love.keypressed(key, isrepeat)
 		ModeManager:setMode('Erasing')
 	elseif key == 'n' then
 		Grid:clearGrid()
+	elseif key == 'm' then
+		tokenSnapping = not tokenSnapping
 	elseif key == '-' then
 		--camera:lookAt(camera:mousepos())
 		camera:zoom(0.9)
@@ -127,13 +142,13 @@ end
 
 function draw(x, y, erase)
 	if coordToGrid(x, y) ~= nil then
-		Grid.grid[numToGrid(x)][numToGrid(y)]:setState(not erase)
+		Grid:setState(x, y, not erase, true)
 	end
 end
 
 function highlight(x, y)
 	if coordToGrid(x, y) ~= nil then
-		Grid.grid[numToGrid(x)][numToGrid(y)]:setState('highlighted')
+		Grid:setState(x, y, not erase, true)
 	end
 end
 
@@ -161,7 +176,7 @@ end
 
 function exitDraggingMode()
 	ModeManager:setMode('none')
-	if selectedToken ~= nil then
+	if selectedToken ~= nil and tokenSnapping then
 		alignTokenToGrid(selectedToken)
 	end
 end

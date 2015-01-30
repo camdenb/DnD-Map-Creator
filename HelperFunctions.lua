@@ -17,6 +17,10 @@ function alignTokenToGrid(token)
 	token.y = roundToMultiple(token.y, Grid:getScale())
 end
 
+function round(num)
+	return roundToMultiple(num, 1)
+end
+
 function roundToMultiple(num, mult)
 	return math.floor((num / mult) + 0.5) * mult
 end
@@ -29,16 +33,18 @@ function coordInRect(x, y, rx, ry, rw, rh)
 	end
 end
 
-function numToGrid(num, round)
+function numToGrid(num)
 	
 	return math.floor(num / Grid:getScale())
 
-	-- if num <= 0 then
-	-- 	return math.floor(num / Grid:getScale())
-	-- else
-	-- 	return math.ceil(num / Grid:getScale())
-	-- end
+end
 
+function checkValidityOfPoint(x, y)
+	if numToGrid(x) < Grid.GRID_LOWERBOUND or numToGrid(x) > Grid.GRID_UPPERBOUND or numToGrid(y) < Grid.GRID_LOWERBOUND or numToGrid(y) > Grid.GRID_UPPERBOUND then
+		return nil
+	else
+		return true
+	end
 end
 
 function coordToGrid(x, y)
@@ -70,9 +76,68 @@ end
 
 function drawLine(sx, sy, ex, ey)
 
+	if not checkValidityOfPoint(sx, sy) or not checkValidityOfPoint(ex, ey) then
+		return nil
+	end
+
+	print(sx, ex, sy, ey)
+
+	-- if sx >= ex then
+	-- 	local tmp = sx
+	-- 	sx = ex
+	-- 	ex = tmp
+	-- end
+
+	-- if sy >= ey then
+	-- 	local tmp = sy
+	-- 	sy = ey
+	-- 	ey = tmp
+	-- end
+
+	local startX, startY = numToGrid(sx), numToGrid(sy)
+	local endX, endY = numToGrid(ex), numToGrid(ey)
+
+	local slopeX = endX - startX
+	local slopeY = endY - startY
+
+	print(startX, endX, startY, endY)
+	print(slopeX, slopeY)
+
+	if math.abs(slopeX) <= math.abs(slopeY) then
+		slopeX = slopeX / math.abs(slopeY)
+		slopeY = slopeY / math.abs(slopeY)
+	else
+		slopeY = slopeY / math.abs(slopeX)
+		slopeX = slopeX / math.abs(slopeX)	
+	end
+
+	print('drawing a line')
+	print(slopeX, slopeY)
+	print('-----------')
+
+	if math.abs(slopeX) <= math.abs(slopeY) then	
+		local x = startX
+		for y = startY, endY, slopeY do
+			Grid:setState(round(x), round(y), 'filled')
+			x = x + slopeX
+		end
+	else
+		local y = startY
+		for x = startX, endX, slopeX do
+			Grid:setState(round(x), round(y), 'filled')
+			y = y + slopeY
+		end
+	end
+
+
 end
 
 function drawRectangle(sx, sy, ex, ey)
+	
+	if not checkValidityOfPoint(sx, sy) or not checkValidityOfPoint(ex, ey) then
+		return nil
+	end
+
 	xjump, yjump = 1, 1
 
 	if(sx > ex) then
@@ -91,7 +156,7 @@ function drawRectangle(sx, sy, ex, ey)
 		for y = startY, endY, yjump do
 			
 			if x == startX or y == startY or x == endX or y == endY then
-				Grid:setFilled(x, y, false)
+				Grid:setState(x, y, 'filled')
 			end
 
 		end
