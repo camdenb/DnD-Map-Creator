@@ -8,8 +8,8 @@ function Grid:initialize()
 	love.graphics.setLineStyle('rough')
 	love.graphics.setBackgroundColor(220, 220, 220)
 
-	self.scale = 15
-	self.gridSize = 250
+	self.scale = 20
+	self.gridSize = 150
 	self.grid = {}
 	self.bGridLines = true
 	self.GRID_LOWERBOUND = 0

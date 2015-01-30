@@ -13,7 +13,8 @@ local sX, sY
 
 local dragDiffX, dragDiffY = 0, 0
 
-local tokenSnapping = false
+local tokenSnapping = true
+gridSnapRatio = 1
 
 local selectedToken = nil
 local hoveredToken = nil
@@ -112,6 +113,15 @@ function love.keypressed(key, isrepeat)
 			sY = MOUSE_Y
 		else
 			drawLine(sX, sY, MOUSE_X, MOUSE_Y)
+			startLine = false
+		end
+	elseif key == 'k' then
+		if not startLine then
+			startLine = true
+			sX = MOUSE_X
+			sY = MOUSE_Y
+		else
+			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y)
 			startLine = false
 		end
 	elseif key == 'd' then

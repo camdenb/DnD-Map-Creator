@@ -13,8 +13,8 @@ function realignTokens()
 end
 
 function alignTokenToGrid(token)
-	token.x = roundToMultiple(token.x, Grid:getScale())
-	token.y = roundToMultiple(token.y, Grid:getScale())
+	token.x = roundToMultiple(token.x, round(Grid:getScale() * gridSnapRatio))
+	token.y = roundToMultiple(token.y, round(Grid:getScale() * gridSnapRatio))
 end
 
 function round(num)
