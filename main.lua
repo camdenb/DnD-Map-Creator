@@ -88,19 +88,6 @@ function love.update(dt)
 		draw(MOUSE_X, MOUSE_Y, true)
 	end
 
-	-- if love.mouse.isDown('l') then
-
-	-- 	local diffX = mouseOldX - MOUSE_X
-	-- 	local diffY = mouseOldY - MOUSE_Y
-
-	-- 	--CHANGE COORD SYSTEM TO START AT 0,0 IN TOP LEFT CORNER
-
-	-- 	camera:move(diffX, diffY)
-	-- end
-
-	mouseOldX = MOUSE_X
-	mouseOldY = MOUSE_Y
-
 end
 
 function love.keypressed(key, isrepeat)
@@ -163,10 +150,17 @@ function highlight(x, y)
 end
 
 function love.mousepressed(x, y, button)
-	if getHoveredToken() ~= nil then
+	
+	if love.keyboard.isDown('lshift') then
+		local xx, yy = camera:pos()
+		camera:move(MOUSE_X - xx, MOUSE_Y - yy)
+	elseif getHoveredToken() ~= nil then
 		selectedToken = getHoveredToken()
 		enterDraggingMode(MOUSE_X, MOUSE_Y)
 	end
+
+	
+
 end
 
 function love.mousereleased()
