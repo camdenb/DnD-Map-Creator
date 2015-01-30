@@ -1,5 +1,6 @@
 class = require 'lib/middleclass'
 Camera = require 'lib/hump-master/camera'
+Timer = require 'lib/hump-master/timer'
 
 require 'Grid'
 require 'Token'
@@ -35,6 +36,7 @@ function love.load()
 	realignTokens()
 
 	takeScreenshot()
+
 
 end
 
@@ -125,13 +127,13 @@ end
 
 function draw(x, y, erase)
 	if coordToGrid(x, y) ~= nil then
-		Grid.grid[numToGrid(x)][numToGrid(y)] = not erase
+		Grid.grid[numToGrid(x)][numToGrid(y)]:setState(not erase)
 	end
 end
 
 function highlight(x, y)
 	if coordToGrid(x, y) ~= nil then
-		Grid.grid[numToGrid(x)][numToGrid(y)] = "highlighted"
+		Grid.grid[numToGrid(x)][numToGrid(y)]:setState('highlighted')
 	end
 end
 

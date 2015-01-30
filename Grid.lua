@@ -1,4 +1,5 @@
 Grid = class('Grid')
+require 'Cell'
 
 function Grid:initialize()
 	print('Grid has been initialized')
@@ -25,7 +26,7 @@ function Grid:initGrid()
 
 		for y = -self.gridSize / 2, self.gridSize / 2 - 1, 1 do
 
-			self.grid[x][y] = false
+			self.grid[x][y] = Cell:new(x, y, 'none')
 			
 		end
 	end
@@ -40,11 +41,11 @@ function Grid:draw()
 				love.graphics.setColor(255, 0, 0, 30)
 				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
 
-			elseif self.grid[x / self.scale][y / self.scale] == true then
+			elseif self.grid[x / self.scale][y / self.scale]:getState() == 'filled' then
 				love.graphics.setColor(50, 50, 50)
 				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
 
-			elseif self.grid[x / self.scale][y / self.scale] == false and bGridLines then
+			elseif self.grid[x / self.scale][y / self.scale]:getState() == 'none' and self.bGridLines then
 				love.graphics.setColor(100, 100, 100, 10)
 				love.graphics.rectangle('line', x, y, self.scale, self.scale)
 				
@@ -60,13 +61,13 @@ end
 function Grid:clearGrid()
 	for x = (-self.gridSize / 2), (self.gridSize / 2 - 1), 1 do
 		for y = (-self.gridSize / 2), (self.gridSize / 2 - 1), 1 do
-			self.grid[x][y] = false
+			self.grid[x][y]:setScale('none')
 		end
 	end
 end
 
 function Grid:setFilled(x, y, erase)
 	erase = erase or false
-	self.grid[x][y] = not erase
+	self.grid[x][y]:setState(not erase)
 end
 
