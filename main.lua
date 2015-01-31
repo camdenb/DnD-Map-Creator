@@ -19,9 +19,15 @@ gridSnapRatio = 1
 local selectedToken = nil
 local hoveredToken = nil
 
+local panPercent = 0.2 --percent of side of screen to trigger pan
+local panSpeed = 7
+
 function love.load()
 
-	love.window.setMode(500, 500)
+	WINDOW_HEIGHT = 500
+	WINDOW_WIDTH = 500
+
+	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
 	love.window.setTitle('Dungeons & Dragons Map Explorer')
 
 	Grid = Grid:new()
@@ -35,6 +41,7 @@ function love.load()
 
 	TokenFactory:addToken(10, 10, 3, {255, 255, 0}, 'token1')
 	TokenFactory:addToken(250, 250, 2, {0, 125, 0}, 'token2')
+	TokenFactory:addToken(250, 250, 10, {126, 0, 218}, 'Christophe')
 
 	mouseOldX = 0
 	mouseOldY = 0
@@ -86,6 +93,22 @@ function love.update(dt)
 		draw(MOUSE_X, MOUSE_Y, false)
 	elseif ModeManager:isMode('Erasing') then
 		draw(MOUSE_X, MOUSE_Y, true)
+	end
+
+	if love.keyboard.isDown('lshift') then
+		local camX, camY = camera:cameraCoords(MOUSE_X, MOUSE_Y)
+		if camX < round(panPercent * WINDOW_WIDTH) then
+			camera:move(-panSpeed, 0)
+		elseif camX > round((1 - panPercent) * WINDOW_WIDTH) then
+			camera:move(panSpeed, 0)
+		end
+
+		if camY < round(panPercent * WINDOW_HEIGHT) then
+			camera:move(0, -panSpeed)
+		elseif camY > round((1 - panPercent) * WINDOW_HEIGHT) then
+			camera:move(0, panSpeed)
+		end
+
 	end
 
 end

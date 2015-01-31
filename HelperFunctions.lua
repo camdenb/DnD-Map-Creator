@@ -1,7 +1,7 @@
 function takeScreenshot()
 	print('Took screenshot.')
 	scrot = love.graphics.newScreenshot()
-	scrot:encode(os.date('%d-%m_%M-%S') .. '.png', 'png')
+	scrot:encode(os.date('%m-%d_%H-%M-%S') .. '.png', 'png')
 	--love.filesystem.write('', scrot)
 end
 
