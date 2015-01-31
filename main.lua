@@ -22,7 +22,12 @@ local hoveredToken = nil
 local panPercent = 0.2 --percent of side of screen to trigger pan
 local panSpeed = 7
 
+local selectingFile = false
+local currentFileIndex = 0
+local availableMaps
+
 function love.load()
+
 
 	WINDOW_HEIGHT = 500
 	WINDOW_WIDTH = 500
@@ -41,7 +46,6 @@ function love.load()
 
 	TokenFactory:addToken(10, 10, 3, {255, 255, 0}, 'token1')
 	TokenFactory:addToken(250, 250, 2, {0, 125, 0}, 'token2')
-	TokenFactory:addToken(250, 250, 10, {126, 0, 218}, 'Christophe')
 
 	mouseOldX = 0
 	mouseOldY = 0
@@ -49,6 +53,10 @@ function love.load()
 	if tokenSnapping then
 		realignTokens()
 	end
+
+
+	availableMaps = love.filesystem.getDirectoryItems('/maps')
+	currentFileIndex = #availableMaps
 
 	takeScreenshot()
 
@@ -75,7 +83,9 @@ function love.draw(dt)
 	love.graphics.print(math.floor(MOUSE_X) .. " " .. math.floor(MOUSE_Y), 200, 10)
 	love.graphics.print(numToGrid(MOUSE_X) .. " " .. numToGrid(MOUSE_Y), 200, 25)
 
-
+	if selectingFile then
+		love.graphics.print(availableMaps[currentFileIndex], 10, WINDOW_HEIGHT - 20)
+	end
 end
 
 function love.update(dt)
@@ -108,8 +118,9 @@ function love.update(dt)
 		elseif camY > round((1 - panPercent) * WINDOW_HEIGHT) then
 			camera:move(0, panSpeed)
 		end
-
 	end
+
+
 
 end
 
@@ -140,6 +151,23 @@ function love.keypressed(key, isrepeat)
 		ModeManager:setMode('Erasing')
 	elseif key == 'n' then
 		Grid:clearGrid()
+	elseif key == 's' then
+		saveGrid()
+	elseif key == 'a' then
+		if not selectingFile then
+			selectingFile = true
+		else
+			if currentFileIndex <= 1 then
+				currentFileIndex = #availableMaps
+			else
+				currentFileIndex = currentFileIndex - 1
+			end
+		end
+	elseif key == 'return' then
+		if selectingFile then
+			loadGrid(availableMaps[currentFileIndex])
+			selectingFile = false
+		end
 	elseif key == 'm' then
 		tokenSnapping = not tokenSnapping
 	elseif key == '-' then

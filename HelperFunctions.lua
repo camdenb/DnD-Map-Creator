@@ -5,6 +5,21 @@ function takeScreenshot()
 	--love.filesystem.write('', scrot)
 end
 
+function saveGrid()
+	love.filesystem.write('/maps/saved-' .. os.date('%m-%d_%H-%M-%S') .. '.txt', Grid:gridToString())
+	print('grid saved as: ' .. 'saved-' .. os.date('%m-%d_%H-%M-%S') .. '.txt')
+end
+
+function loadGrid(fileString)
+	fileString = tostring(fileString)
+	print('loading ' .. fileString)
+	local contents = love.filesystem.read('/maps/' .. fileString)
+	local len = string.len(contents)
+
+	for i = 0, len - 1, 1 do
+		Grid:setState(i % Grid.gridSize, math.floor(i / Grid.gridSize), string.sub(contents, i, i))
+	end
+end
 
 function realignTokens()
 	for i, token in ipairs(TokenFactory:getTokens()) do
@@ -80,19 +95,6 @@ function drawLine(sx, sy, ex, ey)
 		return nil
 	end
 
-	print(sx, ex, sy, ey)
-
-	-- if sx >= ex then
-	-- 	local tmp = sx
-	-- 	sx = ex
-	-- 	ex = tmp
-	-- end
-
-	-- if sy >= ey then
-	-- 	local tmp = sy
-	-- 	sy = ey
-	-- 	ey = tmp
-	-- end
 
 	local startX, startY = numToGrid(sx), numToGrid(sy)
 	local endX, endY = numToGrid(ex), numToGrid(ey)
@@ -100,8 +102,6 @@ function drawLine(sx, sy, ex, ey)
 	local slopeX = endX - startX
 	local slopeY = endY - startY
 
-	print(startX, endX, startY, endY)
-	print(slopeX, slopeY)
 
 	if math.abs(slopeX) <= math.abs(slopeY) then
 		slopeX = slopeX / math.abs(slopeY)
@@ -110,11 +110,7 @@ function drawLine(sx, sy, ex, ey)
 		slopeY = slopeY / math.abs(slopeX)
 		slopeX = slopeX / math.abs(slopeX)	
 	end
-
-	print('drawing a line')
-	print(slopeX, slopeY)
-	print('-----------')
-
+	
 	if math.abs(slopeX) <= math.abs(slopeY) then	
 		local x = startX
 		for y = startY, endY, slopeY do

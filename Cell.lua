@@ -7,12 +7,31 @@ function Cell:initialize(x, y, state)
 	self.color = nil
 end
 
-function Cell:getState()
+function Cell:getState(numForm)
+
+	if numForm == nil or false then
+		return self.state
+	end
+
+	if numForm then
+		if self.state == 'none' then
+			return 0
+		elseif self.state == 'filled' then
+			return 1
+		end
+	end
+
 	return self.state
+
 end
 
 function Cell:setState(state)
-	if state == false then
+
+	if tonumber(state) == 0 then
+		self.state = 'none'
+	elseif tonumber(state) == 1 then
+		self.state = 'filled'
+	elseif state == false then
 		self.state = 'none'
 	elseif state == true then
 		self.state = 'filled'
@@ -20,3 +39,4 @@ function Cell:setState(state)
 		self.state = state
 	end
 end
+

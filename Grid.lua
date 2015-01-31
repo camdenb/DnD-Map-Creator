@@ -41,17 +41,20 @@ function Grid:draw()
 				love.graphics.setColor(255, 0, 0, 30)
 				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
 
-			elseif Grid:getState(x, y, true) == 'filled' then
+			elseif Grid:getState(x, y, true, true) == 1 then
 				love.graphics.setColor(50, 50, 50)
 				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
 
-			elseif Grid:getState(x, y, true) == 'none' and self.bGridLines then
+			elseif Grid:getState(x, y, true, true) == 0 and self.bGridLines then
 				love.graphics.setColor(100, 100, 100, 10)
 				love.graphics.rectangle('line', x, y, self.scale, self.scale)
-				
 			end
 		end
 	end
+end
+
+function Grid:to_table()
+	return self.grid
 end
 
 function Grid:getScale()
@@ -76,14 +79,26 @@ function Grid:setState(x, y, state, convertNumsToGrid)
 	self.grid[x][y]:setState(state)
 end
 
-function Grid:getState(x, y, convertNumsToGrid)
+function Grid:getState(x, y, convertNumsToGrid, numForm)
 	if convertNumsToGrid then
 		x = numToGrid(x)
 		y = numToGrid(y)
 	end
-	return self.grid[x][y]:getState()
+
+	local state = self.grid[x][y]:getState(numForm)
+
+	return state
 end
 
+function Grid:gridToString()
+	local str = ''
+	for x = 0, self.gridSize - 1, 1 do
+		for y = 0, self.gridSize - 1, 1 do
+			str = str .. Grid:getState(x, y, false, true)			
+		end
+	end
+	return str
+end
 
 
 
