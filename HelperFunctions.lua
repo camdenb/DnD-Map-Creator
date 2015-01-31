@@ -6,8 +6,8 @@ function takeScreenshot()
 end
 
 function saveGrid()
-	love.filesystem.write('/maps/saved-' .. os.date('%m-%d_%H-%M-%S') .. '.txt', Grid:gridToString())
-	print('grid saved as: ' .. 'saved-' .. os.date('%m-%d_%H-%M-%S') .. '.txt')
+	love.filesystem.write('/maps/' .. os.date('%b-%d-%Y_%I%p-%M%S') .. '.txt', Grid:gridToString())
+	print('grid saved as: ' .. os.date('%b-%d-%Y_%I%p-%M%S') .. '.txt')
 end
 
 function loadGrid(fileString)
@@ -110,7 +110,7 @@ function drawLine(sx, sy, ex, ey)
 		slopeY = slopeY / math.abs(slopeX)
 		slopeX = slopeX / math.abs(slopeX)	
 	end
-	
+
 	if math.abs(slopeX) <= math.abs(slopeY) then	
 		local x = startX
 		for y = startY, endY, slopeY do
@@ -159,6 +159,13 @@ function drawRectangle(sx, sy, ex, ey)
 	end
 end
 
+function nextColor()
+	if currentColor == #colors then
+		currentColor = 1
+	else
+		currentColor = currentColor + 1
+	end
+end
 
 
 

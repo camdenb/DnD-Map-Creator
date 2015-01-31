@@ -4,7 +4,7 @@ function Cell:initialize(x, y, state)
 	self.x = x
 	self.y = y
 	self.state = state
-	self.color = nil
+	self.color = {0,0,0}
 end
 
 function Cell:getState(numForm)
@@ -38,5 +38,22 @@ function Cell:setState(state)
 	else
 		self.state = state
 	end
+end
+
+function Cell:paint(color, erase)
+	self.color = color
+	if erase then
+		self.state = 'none'
+	else
+		self.state = 'filled'
+	end
+end
+
+function Cell:setColor(color)
+	self.color = color
+end
+
+function Cell:getColor()
+	return self.color
 end
 

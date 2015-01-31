@@ -37,12 +37,14 @@ function Grid:draw()
 		for y = 0, (self.gridSize - 1) * self.scale, self.scale do
 			local mouseX, mouseY = camera:mousepos()
 
+			local curCell = Grid:getCell(x, y, true)
+
 			if math.floor(mouseX / self.scale) == math.floor(x / self.scale) and math.floor(mouseY / self.scale) == math.floor(y / self.scale) then
 				love.graphics.setColor(255, 0, 0, 30)
 				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
 
 			elseif Grid:getState(x, y, true, true) == 1 then
-				love.graphics.setColor(50, 50, 50)
+				love.graphics.setColor(curCell.color)
 				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
 
 			elseif Grid:getState(x, y, true, true) == 0 and self.bGridLines then
@@ -51,6 +53,18 @@ function Grid:draw()
 			end
 		end
 	end
+end
+
+function Grid:getCell(x, y, convertNumsToGrid)
+	if convertNumsToGrid then
+		x = numToGrid(x)
+		y = numToGrid(y)
+	end
+	return self.grid[x][y]
+end
+
+function Grid:paint(x, y, color, erase, convertNumsToGrid)
+	self:getCell(x, y, convertNumsToGrid):paint(color, erase)
 end
 
 function Grid:to_table()

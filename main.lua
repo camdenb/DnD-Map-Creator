@@ -7,6 +7,7 @@ require 'Token'
 require 'TokenFactory'
 require 'ModeManager'
 require 'HelperFunctions'
+require 'ColorFunctions'
 
 local startLine
 local sX, sY
@@ -25,6 +26,18 @@ local panSpeed = 7
 local selectingFile = false
 local currentFileIndex = 0
 local availableMaps
+
+currentColor = 1
+
+colors = {
+	{HSL(0, 0, 0)},
+	{HSL(0, 200, 100)},
+	{HSL(30, 255, 100)},
+	{HSL(100, 200, 100)},
+	{HSL(170, 200, 150)}
+}
+
+local colorOutlineWidth = 5
 
 function love.load()
 
@@ -47,13 +60,12 @@ function love.load()
 	TokenFactory:addToken(10, 10, 3, {255, 255, 0}, 'token1')
 	TokenFactory:addToken(250, 250, 2, {0, 125, 0}, 'token2')
 
-	mouseOldX = 0
-	mouseOldY = 0
 
 	if tokenSnapping then
 		realignTokens()
 	end
 
+	print(colors[1], colors[2])
 
 	availableMaps = love.filesystem.getDirectoryItems('/maps')
 	currentFileIndex = #availableMaps
@@ -86,6 +98,11 @@ function love.draw(dt)
 	if selectingFile then
 		love.graphics.print(availableMaps[currentFileIndex], 10, WINDOW_HEIGHT - 20)
 	end
+
+	love.graphics.setColor(0, 0, 0)
+	love.graphics.rectangle('fill', WINDOW_WIDTH - 20 - colorOutlineWidth, WINDOW_HEIGHT - 20 - colorOutlineWidth, 30 + colorOutlineWidth * 2, 30 + colorOutlineWidth * 2)
+	love.graphics.setColor(colors[currentColor])
+	love.graphics.rectangle('fill', WINDOW_WIDTH - 20, WINDOW_HEIGHT - 20, 30, 30)
 end
 
 function love.update(dt)
@@ -100,9 +117,9 @@ function love.update(dt)
 	end
 
 	if ModeManager:isMode('Drawing') then
-		draw(MOUSE_X, MOUSE_Y, false)
+		paint(MOUSE_X, MOUSE_Y, false)
 	elseif ModeManager:isMode('Erasing') then
-		draw(MOUSE_X, MOUSE_Y, true)
+		paint(MOUSE_X, MOUSE_Y, true)
 	end
 
 	if love.keyboard.isDown('lshift') then
@@ -147,6 +164,8 @@ function love.keypressed(key, isrepeat)
 		end
 	elseif key == 'd' then
 		ModeManager:setMode('Drawing')
+	elseif key == 'c' then
+		nextColor()
 	elseif key == 'e' then
 		ModeManager:setMode('Erasing')
 	elseif key == 'n' then
@@ -167,6 +186,7 @@ function love.keypressed(key, isrepeat)
 		if selectingFile then
 			loadGrid(availableMaps[currentFileIndex])
 			selectingFile = false
+			currentFileIndex = #availableMaps
 		end
 	elseif key == 'm' then
 		tokenSnapping = not tokenSnapping
@@ -188,9 +208,9 @@ function love.keyreleased(key, isrepeat)
 end
 
 
-function draw(x, y, erase)
+function paint(x, y, erase)
 	if coordToGrid(x, y) ~= nil then
-		Grid:setState(x, y, not erase, true)
+		Grid:paint(x, y, colors[currentColor], erase, true)
 	end
 end
 
