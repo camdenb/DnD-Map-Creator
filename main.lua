@@ -2,6 +2,7 @@ class = require 'lib/middleclass'
 Camera = require 'lib/hump-master/camera'
 Timer = require 'lib/hump-master/timer'
 
+
 require 'Grid'
 require 'Token'
 require 'TokenFactory'
@@ -59,8 +60,9 @@ function love.load()
 
 	camera = Camera((Grid.gridSize / 2) * Grid:getScale(), (Grid.gridSize / 2) * Grid:getScale())
 
-	TokenFactory:addToken(10, 10, 3, {255, 255, 0}, 'token1')
-	TokenFactory:addToken(10, 250, 2, {0, 125, 0}, 'token2')
+	TokenFactory:addToken(10, 10, 3, {255, 200, 0}, 'token1')
+	TokenFactory:addToken(10, 250, 2, {125, 125, 0}, 'token2')
+	TokenFactory:addToken(10, 250, 4, {255, 125, 0}, 'Goldar the Behemoth')
 
 
 	if tokenSnapping then
@@ -106,6 +108,7 @@ function love.draw(dt)
 end
 
 function love.update(dt)
+
 
 	MOUSE_X, MOUSE_Y = camera:mousepos()
 
