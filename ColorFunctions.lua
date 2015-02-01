@@ -12,3 +12,32 @@ function HSL(h, s, l, a)
     else              r,g,b = c,0,x
     end return (r+m)*255,(g+m)*255,(b+m)*255,a
 end
+
+function colorToString(color)
+    
+    local str = ''
+
+    str = str .. string.format('%03s', color[1]) .. string.format('%03s', color[2]) .. string.format('%03s', color[3])
+
+    if #color == 4 then
+        str = str .. string.format('%03s', color[4])
+    else
+        str = str .. '255'
+    end
+
+    return str
+
+end
+
+function stringToColor(str)
+
+    color = {}
+
+    color[1] = tonumber(string.sub(str, 1, 3))
+    color[2] = tonumber(string.sub(str, 4, 6))
+    color[3] = tonumber(string.sub(str, 7, 9))
+    color[4] = tonumber(string.sub(str, 10, 12))
+
+    return color
+
+end

@@ -7,45 +7,29 @@ function Cell:initialize(x, y, state)
 	self.color = {0,0,0}
 end
 
-function Cell:getState(numForm)
+function Cell:getState()
 
-	if numForm == nil or false then
-		return self.state
+	if self.state == 0 then
+		return 0
+	elseif self.state == 1 then
+		return 1
 	end
-
-	if numForm then
-		if self.state == 'none' then
-			return 0
-		elseif self.state == 'filled' then
-			return 1
-		end
-	end
-
-	return self.state
 
 end
 
 function Cell:setState(state)
 
-	if tonumber(state) == 0 then
-		self.state = 'none'
-	elseif tonumber(state) == 1 then
-		self.state = 'filled'
-	elseif state == false then
-		self.state = 'none'
-	elseif state == true then
-		self.state = 'filled'
-	else
-		self.state = state
-	end
+	self.state = tonumber(state)
+	return self.state
+	
 end
 
 function Cell:paint(color, erase)
 	self.color = color
 	if erase then
-		self.state = 'none'
+		self.state = 0
 	else
-		self.state = 'filled'
+		self.state = 1
 	end
 end
 

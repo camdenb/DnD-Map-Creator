@@ -16,8 +16,14 @@ function loadGrid(fileString)
 	local contents = love.filesystem.read('/maps/' .. fileString)
 	local len = string.len(contents)
 
-	for i = 0, len - 1, 1 do
-		Grid:setState(i % Grid.gridSize, math.floor(i / Grid.gridSize), string.sub(contents, i, i))
+	for i = 0, len - 1, 13 do
+		local x = math.floor((i / 13) / Grid.gridSize)
+		local y = (i / 13) % Grid.gridSize
+
+		local state = Grid:setState(x, y, string.sub(contents, i + 1, i + 1), false)
+		if state == 1 then
+			Grid:paint(x, y, stringToColor(string.sub(contents, i + 2, i + 14)), false, false)
+		end
 	end
 end
 
@@ -114,13 +120,13 @@ function drawLine(sx, sy, ex, ey)
 	if math.abs(slopeX) <= math.abs(slopeY) then	
 		local x = startX
 		for y = startY, endY, slopeY do
-			Grid:setState(round(x), round(y), 'filled')
+			Grid:paint(round(x), round(y), colors[currentColor])
 			x = x + slopeX
 		end
 	else
 		local y = startY
 		for x = startX, endX, slopeX do
-			Grid:setState(round(x), round(y), 'filled')
+			Grid:paint(round(x), round(y), colors[currentColor])
 			y = y + slopeY
 		end
 	end
@@ -152,7 +158,7 @@ function drawRectangle(sx, sy, ex, ey)
 		for y = startY, endY, yjump do
 			
 			if x == startX or y == startY or x == endX or y == endY then
-				Grid:setState(x, y, 'filled')
+				Grid:paint(round(x), round(y), colors[currentColor])
 			end
 
 		end

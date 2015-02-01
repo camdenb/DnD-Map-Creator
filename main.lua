@@ -30,11 +30,11 @@ local availableMaps
 currentColor = 1
 
 colors = {
-	{HSL(0, 0, 0)},
-	{HSL(0, 200, 100)},
-	{HSL(30, 255, 100)},
-	{HSL(100, 200, 100)},
-	{HSL(170, 200, 150)}
+	{000, 000, 000, 254},
+	{200, 100, 100},
+	{100, 200, 000},
+	{100, 200, 200},
+	{000, 100, 200}
 }
 
 local colorOutlineWidth = 5
@@ -58,14 +58,13 @@ function love.load()
 	camera = Camera((Grid.gridSize / 2) * Grid:getScale(), (Grid.gridSize / 2) * Grid:getScale())
 
 	TokenFactory:addToken(10, 10, 3, {255, 255, 0}, 'token1')
-	TokenFactory:addToken(250, 250, 2, {0, 125, 0}, 'token2')
+	TokenFactory:addToken(10, 250, 2, {0, 125, 0}, 'token2')
 
 
 	if tokenSnapping then
 		realignTokens()
 	end
 
-	print(colors[1], colors[2])
 
 	availableMaps = love.filesystem.getDirectoryItems('/maps')
 	currentFileIndex = #availableMaps
@@ -211,12 +210,6 @@ end
 function paint(x, y, erase)
 	if coordToGrid(x, y) ~= nil then
 		Grid:paint(x, y, colors[currentColor], erase, true)
-	end
-end
-
-function highlight(x, y)
-	if coordToGrid(x, y) ~= nil then
-		Grid:setState(x, y, not erase, true)
 	end
 end
 
