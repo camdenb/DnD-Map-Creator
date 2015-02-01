@@ -127,6 +127,13 @@ function love.update(dt)
 			mouseOldY = MOUSE_Y
 	elseif ModeManager:isMode('Erasing') then
 		paint(MOUSE_X, MOUSE_Y, true)
+		if mouseOldX == nil or mouseOldY == nil then
+			mouseOldX = MOUSE_X
+			mouseOldY = MOUSE_Y
+		end
+			drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y, true)
+			mouseOldX = MOUSE_X
+			mouseOldY = MOUSE_Y
 	end
 
 	if love.keyboard.isDown('lshift') then
@@ -214,6 +221,8 @@ function love.keyreleased(key, isrepeat)
 		mouseOldY = nil
 	elseif key == 'e' then
 		ModeManager:setMode('none')
+		mouseOldX = nil
+		mouseOldY = nil
 	end
 end
 

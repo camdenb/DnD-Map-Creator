@@ -95,7 +95,7 @@ function getWorldCoords(num, str)
 	end
 end
 
-function drawLine(sx, sy, ex, ey)
+function drawLine(sx, sy, ex, ey, erase)
 
 	if not checkValidityOfPoint(sx, sy) or not checkValidityOfPoint(ex, ey) then
 		return nil
@@ -120,13 +120,13 @@ function drawLine(sx, sy, ex, ey)
 	if math.abs(slopeX) <= math.abs(slopeY) then	
 		local x = startX
 		for y = startY, endY, slopeY do
-			Grid:paint(round(x), round(y), colors[currentColor])
+			Grid:paint(round(x), round(y), colors[currentColor], erase)
 			x = x + slopeX
 		end
 	else
 		local y = startY
 		for x = startX, endX, slopeX do
-			Grid:paint(round(x), round(y), colors[currentColor])
+			Grid:paint(round(x), round(y), colors[currentColor], erase)
 			y = y + slopeY
 		end
 	end
@@ -134,7 +134,7 @@ function drawLine(sx, sy, ex, ey)
 
 end
 
-function drawRectangle(sx, sy, ex, ey)
+function drawRectangle(sx, sy, ex, ey, fill)
 	
 	if not checkValidityOfPoint(sx, sy) or not checkValidityOfPoint(ex, ey) then
 		return nil
