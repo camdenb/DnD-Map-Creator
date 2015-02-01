@@ -142,7 +142,7 @@ end
 
 function love.keypressed(key, isrepeat)
 	if key == 'g' then 
-		bGridLines = not bGridLines
+		Grid.bGridLines = not Grid.bGridLines
 	elseif key == 'l' then
 		if not startLine then
 			startLine = true
