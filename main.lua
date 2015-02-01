@@ -27,6 +27,8 @@ local selectingFile = false
 local currentFileIndex = 0
 local availableMaps
 
+mouseOldX, mouseOldY = nil, nil
+
 currentColor = 1
 
 colors = {
@@ -64,7 +66,6 @@ function love.load()
 	if tokenSnapping then
 		realignTokens()
 	end
-
 
 	availableMaps = love.filesystem.getDirectoryItems('/maps')
 	currentFileIndex = #availableMaps
@@ -117,6 +118,13 @@ function love.update(dt)
 
 	if ModeManager:isMode('Drawing') then
 		paint(MOUSE_X, MOUSE_Y, false)
+		if mouseOldX == nil or mouseOldY == nil then
+			mouseOldX = MOUSE_X
+			mouseOldY = MOUSE_Y
+		end
+			drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
+			mouseOldX = MOUSE_X
+			mouseOldY = MOUSE_Y
 	elseif ModeManager:isMode('Erasing') then
 		paint(MOUSE_X, MOUSE_Y, true)
 	end
@@ -162,6 +170,7 @@ function love.keypressed(key, isrepeat)
 			startLine = false
 		end
 	elseif key == 'd' then
+		exitDraggingMode()
 		ModeManager:setMode('Drawing')
 	elseif key == 'c' then
 		nextColor()
@@ -201,6 +210,8 @@ end
 function love.keyreleased(key, isrepeat)
 	if key == 'd' and not ModeManager:isMode('Dragging') then
 		ModeManager:setMode('none')
+		mouseOldX = nil
+		mouseOldY = nil
 	elseif key == 'e' then
 		ModeManager:setMode('none')
 	end
