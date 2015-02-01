@@ -1,13 +1,13 @@
-ModeManager = class('ModeManager')
+ModeManager = Class{}
 
-function ModeManager:initialize()
+function ModeManager:init()
 	print('ModeManager has been initialized')
 
 	self.modes = {
-		Mode:new('none'),
-		Mode:new('Drawing'),
-		Mode:new('Dragging'),
-		Mode:new('Erasing')
+		Mode('none'),
+		Mode('Drawing'),
+		Mode('Dragging'),
+		Mode('Erasing')
 	}
 
 	self.currentMode = self.modes[1]
@@ -41,9 +41,9 @@ end
 
 -- ------------------------------------------ --
 
-Mode = class('Mode')
+Mode = Class{}
 
-function Mode:initialize(name)
+function Mode:init(name)
 	self.name = name
 end
 

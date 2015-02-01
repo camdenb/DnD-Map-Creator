@@ -1,6 +1,6 @@
-Cell = class('Cell')
+Cell = Class{}
 
-function Cell:initialize(x, y, state)
+function Cell:init(x, y, state)
 	self.x = x
 	self.y = y
 	self.state = state

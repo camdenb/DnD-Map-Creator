@@ -1,4 +1,4 @@
-class = require 'lib/middleclass'
+Class = require 'lib/hump-master/class'
 Camera = require 'lib/hump-master/camera'
 Timer = require 'lib/hump-master/timer'
 
@@ -51,11 +51,11 @@ function love.load()
 	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
 	love.window.setTitle('Dungeons & Dragons Map Explorer')
 
-	Grid = Grid:new()
+	Grid = Grid()
 
-	ModeManager = ModeManager:new()
+	ModeManager = ModeManager()
 
-	TokenFactory = TokenFactory:new()
+	TokenFactory = TokenFactory()
 	
 
 	camera = Camera((Grid.gridSize / 2) * Grid:getScale(), (Grid.gridSize / 2) * Grid:getScale())

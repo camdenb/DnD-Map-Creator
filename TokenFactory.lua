@@ -1,6 +1,6 @@
-TokenFactory = class('TokenFactory')
+TokenFactory = Class{}
 
-function TokenFactory:initialize()
+function TokenFactory:init()
 	print('TokenFactory has been initialized')
 
 	self.tokens = {}
@@ -14,7 +14,7 @@ function TokenFactory:addToken(x, y, scale, color, name)
 	x = getWorldCoords(x, 'X')
 	y = getWorldCoords(y, 'Y')
 
-	local token = Token:new(x, y, scale, color, name)
+	local token = Token(x, y, scale, color, name)
 
 	table.insert(self.tokens, token)
 

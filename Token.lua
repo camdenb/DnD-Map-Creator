@@ -1,8 +1,8 @@
-Token = class('Token')
+Token = Class{}
 
 local currentID = 0
 
-function Token:initialize(x, y, scale, color, name)
+function Token:init(x, y, scale, color, name)
 
 	print('New Token: ' .. name)
 

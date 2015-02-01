@@ -1,7 +1,8 @@
-Grid = class('Grid')
 require 'Cell'
 
-function Grid:initialize()
+Grid = Class{}
+
+function Grid:init()
 	print('Grid has been initialized')
 
 	love.graphics.setLineWidth(3)
@@ -26,7 +27,7 @@ function Grid:initGrid()
 
 		for y = 0, self.gridSize - 1, 1 do
 
-			self.grid[x][y] = Cell:new(x, y, 0)
+			self.grid[x][y] = Cell(x, y, 0)
 			
 		end
 	end
