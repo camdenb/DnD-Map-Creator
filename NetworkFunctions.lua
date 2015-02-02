@@ -1,10 +1,11 @@
 
-function netPaint(x, y, erase, convertNumsToGrid)
+function netPaint(x, y, erase, convertNumsToGrid, color)
 	if convertNumsToGrid then
 		x = numToGrid(x)
 		y = numToGrid(y)
 	end
-	Network:send( Tserial.pack({1, erase, x, y}) )
+	color = color or {0,0,0,0}
+	Network:send( Tserial.pack({1, erase, x, y, color[1], color[2], color[3], color[4]}) )
 end
 
 function netDrawLine(sx, sy, ex, ey)

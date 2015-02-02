@@ -43,7 +43,8 @@ function Client:receive(data)
 			local erase = d[2]
 			local x = d[3]
 			local y = d[4]
-			Grid:paint(x, y, {0, 0, 0}, erase, false)
+			local colorR, colorG, colorB, colorA = d[5], d[6], d[7], d[8]
+			Grid:paint(x, y, {colorR, colorG, colorB, colorA}, erase, false)
 		elseif typeOfData == 3 then
 			Grid:clearGrid()
 		end

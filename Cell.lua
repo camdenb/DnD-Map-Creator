@@ -25,7 +25,7 @@ function Cell:setState(state)
 end
 
 function Cell:paint(color, erase)
-	netPaint(self.x, self.y, erase, false)
+	netPaint(self.x, self.y, erase, false, color)
 	self.color = color
 	if erase then
 		self.state = 0
