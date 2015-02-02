@@ -8,7 +8,7 @@ function netPaint(x, y, erase, convertNumsToGrid)
 end
 
 function netDrawLine(sx, sy, ex, ey)
-	Network:send( Tserial.pack( {2, sx, sy, ex, ey} ) )
+	--Network:send( Tserial.pack( {2, sx, sy, ex, ey} ) )
 end
 
 function netSendSimpleType(type)

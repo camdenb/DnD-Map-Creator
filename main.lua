@@ -110,7 +110,7 @@ function love.update(dt)
 			mouseOldX = MOUSE_X
 			mouseOldY = MOUSE_Y
 		elseif numToGrid(mouseOldX) ~= numToGrid(MOUSE_X) and numToGrid(mouseOldY) ~= numToGrid(MOUSE_Y) then
-			netDrawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
+			--netDrawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
 			drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
 			mouseOldX = MOUSE_X
 			mouseOldY = MOUSE_Y
@@ -258,7 +258,6 @@ end
 
 function paint(x, y, erase)
 	if coordToGrid(x, y) ~= nil and Grid:getState(x, y, true) ~= 1 then
-		print('drawing!!!!')
 		Grid:paint(x, y, colors[currentColor], erase, true)
 	end
 end
