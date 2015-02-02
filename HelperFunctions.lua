@@ -72,7 +72,7 @@ function coordToGrid(x, y)
 	if numToGrid(x) < Grid.GRID_LOWERBOUND or numToGrid(x) > Grid.GRID_UPPERBOUND or numToGrid(y) < Grid.GRID_LOWERBOUND or numToGrid(y) > Grid.GRID_UPPERBOUND then
 		return nil
 	end
-	return Grid.grid[numToGrid(x)][numToGrid(y)]
+	return Grid:getCell(x, y, true)
 end
 
 function getHoveredToken()
@@ -172,6 +172,45 @@ function nextColor()
 		currentColor = currentColor + 1
 	end
 end
+
+function separateTablesFromString(str)
+
+	local tables = {}
+	local beginIndex = 0
+
+	for i = 1, string.len(str), 1 do
+		substr = string.sub(str, i, i)
+		if substr == '{' then
+			beginIndex = i
+		elseif substr == '}' then
+			table.insert(tables, string.sub(str, beginIndex, i))
+		end
+	end
+
+	for i,v in ipairs(tables) do
+		loadstring('newTable = ' .. v)()
+		local t = newTable
+		newTable = nil
+		tables[i] = t
+	end
+
+	return tables
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

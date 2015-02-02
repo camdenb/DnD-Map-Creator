@@ -1,7 +1,9 @@
 Class = require 'lib/hump-master/class'
 Camera = require 'lib/hump-master/camera'
 Timer = require 'lib/hump-master/timer'
+Lube = require 'lib/lube/lube'
 
+require 'lib/Tserial'
 
 require 'Grid'
 require 'Token'
@@ -9,6 +11,12 @@ require 'TokenFactory'
 require 'ModeManager'
 require 'HelperFunctions'
 require 'ColorFunctions'
+require 'Networking'
+require 'NetworkFunctions'
+require 'Client'
+require 'Server'
+
+-- print(separateTablesFromString('{1,2,3}{2,3,14,1412}')[2][4])
 
 local startLine
 local sX, sY
@@ -42,14 +50,17 @@ colors = {
 
 local colorOutlineWidth = 5
 
-function love.load()
-
+function love.load(args)
 
 	WINDOW_HEIGHT = 500
 	WINDOW_WIDTH = 500
 
 	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
 	love.window.setTitle('Dungeons & Dragons Map Explorer')
+
+	Network = Network('localhost', 9999, tonumber(args[2]) or 0)
+	Network:load()
+	Network:connect()
 
 	Grid = Grid()
 
@@ -74,6 +85,61 @@ function love.load()
 
 	takeScreenshot()
 
+end
+
+function love.update(dt)
+
+	Network:update(dt)
+
+   if dt < 1/30 then
+      love.timer.sleep(1/30 - dt)
+   end
+
+	MOUSE_X, MOUSE_Y = camera:mousepos()
+
+	hoveredToken = getHoveredToken()
+
+	if ModeManager:isMode('Dragging') then
+		selectedToken.x = MOUSE_X - dragDiffX
+		selectedToken.y = MOUSE_Y - dragDiffY
+	end
+
+	if ModeManager:isMode('Drawing') then
+		paint(MOUSE_X, MOUSE_Y, false)
+		if mouseOldX == nil or mouseOldY == nil then
+			mouseOldX = MOUSE_X
+			mouseOldY = MOUSE_Y
+		elseif numToGrid(mouseOldX) ~= numToGrid(MOUSE_X) and numToGrid(mouseOldY) ~= numToGrid(MOUSE_Y) then
+			netDrawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
+			drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
+			mouseOldX = MOUSE_X
+			mouseOldY = MOUSE_Y
+		end
+	elseif ModeManager:isMode('Erasing') then
+		paint(MOUSE_X, MOUSE_Y, true)
+		if mouseOldX == nil or mouseOldY == nil then
+			mouseOldX = MOUSE_X
+			mouseOldY = MOUSE_Y
+		end
+			drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y, true)
+			mouseOldX = MOUSE_X
+			mouseOldY = MOUSE_Y
+	end
+
+	if love.keyboard.isDown('lshift') then
+		local camX, camY = camera:cameraCoords(MOUSE_X, MOUSE_Y)
+		if camX < round(panPercent * WINDOW_WIDTH) then
+			camera:move(-panSpeed, 0)
+		elseif camX > round((1 - panPercent) * WINDOW_WIDTH) then
+			camera:move(panSpeed, 0)
+		end
+
+		if camY < round(panPercent * WINDOW_HEIGHT) then
+			camera:move(0, -panSpeed)
+		elseif camY > round((1 - panPercent) * WINDOW_HEIGHT) then
+			camera:move(0, panSpeed)
+		end
+	end
 
 end
 
@@ -101,62 +167,20 @@ function love.draw(dt)
 		love.graphics.print(availableMaps[currentFileIndex], 10, WINDOW_HEIGHT - 20)
 	end
 
+	if Network:isServer() == 1 then
+		love.graphics.print('server', 0, 0)
+	else
+		love.graphics.print('client', 0, 0)
+	end
+
+
+
 	love.graphics.setColor(0, 0, 0)
 	love.graphics.rectangle('fill', WINDOW_WIDTH - 20 - colorOutlineWidth, WINDOW_HEIGHT - 20 - colorOutlineWidth, 30 + colorOutlineWidth * 2, 30 + colorOutlineWidth * 2)
 	love.graphics.setColor(colors[currentColor])
 	love.graphics.rectangle('fill', WINDOW_WIDTH - 20, WINDOW_HEIGHT - 20, 30, 30)
 end
 
-function love.update(dt)
-
-
-	MOUSE_X, MOUSE_Y = camera:mousepos()
-
-	hoveredToken = getHoveredToken()
-
-	if ModeManager:isMode('Dragging') then
-		selectedToken.x = MOUSE_X - dragDiffX
-		selectedToken.y = MOUSE_Y - dragDiffY
-	end
-
-	if ModeManager:isMode('Drawing') then
-		paint(MOUSE_X, MOUSE_Y, false)
-		if mouseOldX == nil or mouseOldY == nil then
-			mouseOldX = MOUSE_X
-			mouseOldY = MOUSE_Y
-		end
-			drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
-			mouseOldX = MOUSE_X
-			mouseOldY = MOUSE_Y
-	elseif ModeManager:isMode('Erasing') then
-		paint(MOUSE_X, MOUSE_Y, true)
-		if mouseOldX == nil or mouseOldY == nil then
-			mouseOldX = MOUSE_X
-			mouseOldY = MOUSE_Y
-		end
-			drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y, true)
-			mouseOldX = MOUSE_X
-			mouseOldY = MOUSE_Y
-	end
-
-	if love.keyboard.isDown('lshift') then
-		local camX, camY = camera:cameraCoords(MOUSE_X, MOUSE_Y)
-		if camX < round(panPercent * WINDOW_WIDTH) then
-			camera:move(-panSpeed, 0)
-		elseif camX > round((1 - panPercent) * WINDOW_WIDTH) then
-			camera:move(panSpeed, 0)
-		end
-
-		if camY < round(panPercent * WINDOW_HEIGHT) then
-			camera:move(0, -panSpeed)
-		elseif camY > round((1 - panPercent) * WINDOW_HEIGHT) then
-			camera:move(0, panSpeed)
-		end
-	end
-
-
-
-end
 
 function love.keypressed(key, isrepeat)
 	if key == 'g' then 
@@ -184,6 +208,8 @@ function love.keypressed(key, isrepeat)
 		ModeManager:setMode('Drawing')
 	elseif key == 'c' then
 		nextColor()
+	elseif key == 'b' then
+		Network:connect()
 	elseif key == 'e' then
 		ModeManager:setMode('Erasing')
 	elseif key == 'n' then
@@ -231,7 +257,8 @@ end
 
 
 function paint(x, y, erase)
-	if coordToGrid(x, y) ~= nil then
+	if coordToGrid(x, y) ~= nil and Grid:getState(x, y, true) ~= 1 then
+		print('drawing!!!!')
 		Grid:paint(x, y, colors[currentColor], erase, true)
 	end
 end

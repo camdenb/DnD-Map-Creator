@@ -80,6 +80,7 @@ function Grid:getScale()
 end
 
 function Grid:clearGrid()
+	netSendSimpleType(3)
 	for x = 0, self.gridSize - 1, 1 do
 		for y = 0, self.gridSize - 1, 1 do
 
