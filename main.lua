@@ -42,6 +42,7 @@ currentColor = 1
 
 colors = {
 	{000, 000, 000, 254},
+	{100, 100, 100},
 	{200, 100, 100},
 	{100, 200, 000},
 	{100, 200, 200},
@@ -71,10 +72,11 @@ function love.load(args)
 
 	camera = Camera((Grid.gridSize / 2) * Grid:getScale(), (Grid.gridSize / 2) * Grid:getScale())
 
-	TokenFactory:addToken(10, 10, 3, {255, 200, 0}, 'token1')
-	TokenFactory:addToken(10, 250, 2, {125, 125, 0}, 'token2')
-	TokenFactory:addToken(10, 250, 4, {255, 125, 0}, 'Goldar the Behemoth')
-
+	TokenFactory:addToken(10, 10, 4, {255, 200, 0}, 'Yorril')
+	TokenFactory:addToken(10, 250, 3, {125, 125, 0}, 'Kenneth')
+	TokenFactory:addToken(10, 250, 5, {255, 125, 0}, 'Goldar')
+	TokenFactory:addToken(10, 255, 2, {0, 255, 125}, 'Felyrn')
+	TokenFactory:addToken(10, 255, 2, {200, 255, 125}, 'Dasireth')
 
 	if tokenSnapping then
 		realignTokens()
@@ -109,12 +111,11 @@ function love.update(dt)
 		if mouseOldX == nil or mouseOldY == nil then
 			mouseOldX = MOUSE_X
 			mouseOldY = MOUSE_Y
-		elseif numToGrid(mouseOldX) ~= numToGrid(MOUSE_X) and numToGrid(mouseOldY) ~= numToGrid(MOUSE_Y) then
-			--netDrawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
+		elseif numToGrid(mouseOldX) ~= numToGrid(MOUSE_X) or numToGrid(mouseOldY) ~= numToGrid(MOUSE_Y) then
 			drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
+		end
 			mouseOldX = MOUSE_X
 			mouseOldY = MOUSE_Y
-		end
 	elseif ModeManager:isMode('Erasing') then
 		paint(MOUSE_X, MOUSE_Y, true)
 		if mouseOldX == nil or mouseOldY == nil then

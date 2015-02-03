@@ -29,7 +29,11 @@ end
 function TokenFactory:draw(grid)
 	for i, token in ipairs(self.tokens) do
 		love.graphics.setColor(token.color)
-		love.graphics.rectangle('fill', token.x, token.y, grid:getScale() * token.scale, grid:getScale() * token.scale)
+		--love.graphics.rectangle('fill', token.x, token.y, grid:getScale() * token.scale, grid:getScale() * token.scale)
+		local halfScale = (grid:getScale() * token.scale) / 2
+		love.graphics.circle('fill', token.x + halfScale, token.y + halfScale, halfScale)
+		love.graphics.setColor(100, 100, 100)
+		love.graphics.printf(token.name, token.x, token.y + grid:getScale() * token.scale, grid:getScale() * token.scale, 'center')
 	end
 end
 

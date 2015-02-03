@@ -7,6 +7,7 @@ function Network:init(host, port, isServerNum)
 	self.connection = nil
 	self.server = nil
 	self.client = nil
+	self.connected = false
 end
 
 function Network:load()
@@ -31,8 +32,11 @@ end
 function Network:connect()
 	if self.isServerNum == 1 then
 		self.server:listen(self.port)
+		self.connected = true
 	else
-		self.client:connect(self.host, self.port)
+		if(self.client:connect(self.host, self.port)) then
+			self.connected = true
+		end
 	end
 end
 

@@ -25,7 +25,9 @@ function Cell:setState(state)
 end
 
 function Cell:paint(color, erase)
-	netPaint(self.x, self.y, erase, false, color)
+	if Network.connected then
+		netPaint(self.x, self.y, erase, false, color)
+	end
 	self.color = color
 	if erase then
 		self.state = 0
