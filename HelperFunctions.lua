@@ -5,6 +5,12 @@ function takeScreenshot()
 	--love.filesystem.write('', scrot)
 end
 
+function saveTokensAndGrid()
+	local saveStr = Grid:gridToString() .. TokenFactory:tokensToString()
+	love.filesystem.write('/maps/' .. os.date('%b-%d-%Y_%I%p-%M%S') .. '.txt', saveStr)
+	print('grid saved as: ' .. os.date('%b-%d-%Y_%I%p-%M%S') .. '.txt')
+end
+
 function saveGrid()
 	love.filesystem.write('/maps/' .. os.date('%b-%d-%Y_%I%p-%M%S') .. '.txt', Grid:gridToString())
 	print('grid saved as: ' .. os.date('%b-%d-%Y_%I%p-%M%S') .. '.txt')
@@ -25,6 +31,10 @@ function loadGrid(fileString)
 			Grid:paint(x, y, stringToColor(string.sub(contents, i + 2, i + 14)), false, false)
 		end
 	end
+end
+
+function loadTokens(tokenString)
+
 end
 
 function realignTokens()
@@ -77,13 +87,19 @@ end
 
 function getHoveredToken()
 
+	local smallestToken = nil
+	local smallestTokenSize = 100
+
 	for i,token in ipairs(TokenFactory:getTokens()) do
 		if coordInRect(MOUSE_X, MOUSE_Y, token.x, token.y, token.scale * Grid:getScale(), token.scale * Grid:getScale()) then
-			return token
+			if smallestToken == nil or token.scale < smallestTokenSize then
+				smallestToken = token
+				smallestTokenSize = token.scale
+			end
 		end
 	end
 
-	return nil
+	return smallestToken
 end
 
 function getWorldCoords(num, str)

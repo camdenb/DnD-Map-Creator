@@ -72,11 +72,13 @@ function love.load(args)
 
 	camera = Camera((Grid.gridSize / 2) * Grid:getScale(), (Grid.gridSize / 2) * Grid:getScale())
 
-	TokenFactory:addToken(10, 10, 4, {255, 200, 0}, 'Yorril')
-	TokenFactory:addToken(10, 250, 3, {125, 125, 0}, 'Kenneth')
-	TokenFactory:addToken(10, 250, 5, {255, 125, 0}, 'Goldar')
-	TokenFactory:addToken(10, 255, 2, {0, 255, 125}, 'Felyrn')
-	TokenFactory:addToken(10, 255, 2, {200, 255, 125}, 'Dasireth')
+	TokenFactory:addToken(10, 10, 4, {255, 200, 0, 235}, 'Yorril')
+	TokenFactory:addToken(10, 250, 3, {125, 125, 0, 235}, 'Kenneth')
+	TokenFactory:addToken(10, 250, 5, {255, 125, 0, 235}, 'Goldar')
+	TokenFactory:addToken(10, 255, 2, {0, 255, 125, 235}, 'Felyrn')
+	TokenFactory:addToken(10, 255, 2, {200, 255, 125, 235}, 'Dasireth')
+
+	-- TokenFactory:tokensToString()
 
 	if tokenSnapping then
 		realignTokens()
@@ -258,7 +260,7 @@ end
 
 
 function paint(x, y, erase)
-	if coordToGrid(x, y) ~= nil and Grid:getState(x, y, true) ~= 1 then
+	if coordToGrid(x, y) ~= nil then
 		Grid:paint(x, y, colors[currentColor], erase, true)
 	end
 end

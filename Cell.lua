@@ -28,6 +28,7 @@ function Cell:paint(color, erase)
 	if Network.connected then
 		netPaint(self.x, self.y, erase, false, color)
 	end
+	print('paint!')
 	self.color = color
 	if erase then
 		self.state = 0
