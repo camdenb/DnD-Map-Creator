@@ -150,7 +150,7 @@ function drawLine(sx, sy, ex, ey, erase)
 
 end
 
-function drawRectangle(sx, sy, ex, ey, fill)
+function drawRectangle(sx, sy, ex, ey, fill, erase)
 	
 	if not checkValidityOfPoint(sx, sy) or not checkValidityOfPoint(ex, ey) then
 		return nil
@@ -172,9 +172,13 @@ function drawRectangle(sx, sy, ex, ey, fill)
 
 	for x = startX, endX, xjump do
 		for y = startY, endY, yjump do
-			
-			if x == startX or y == startY or x == endX or y == endY then
-				Grid:paint(round(x), round(y), colors[currentColor])
+	
+			if not fill then		
+				if x == startX or y == startY or x == endX or y == endY then
+					Grid:paint(round(x), round(y), colors[currentColor], erase)
+				end
+			else
+				Grid:paint(round(x), round(y), colors[currentColor], erase)
 			end
 
 		end

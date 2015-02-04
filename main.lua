@@ -36,6 +36,9 @@ local selectingFile = false
 local currentFileIndex = 0
 local availableMaps
 
+fog = true
+drawingFog = false
+
 mouseOldX, mouseOldY = nil, nil
 
 currentColor = 1
@@ -176,7 +179,19 @@ function love.draw(dt)
 		love.graphics.print('client', 0, 0)
 	end
 
-
+	if ModeManager:isMode('Drawing') then
+		if drawingFog then
+			love.graphics.print('drawing - fog', WINDOW_WIDTH - 150, 10)
+		else
+			love.graphics.print('drawing - normal', WINDOW_WIDTH - 150, 10)
+		end
+	elseif ModeManager:isMode('Erasing') then
+		if drawingFog then
+			love.graphics.print('erasing - fog', WINDOW_WIDTH - 150, 10)
+		else
+			love.graphics.print('erasing - normal', WINDOW_WIDTH - 150, 10)
+		end
+	end
 
 	love.graphics.setColor(0, 0, 0)
 	love.graphics.rectangle('fill', WINDOW_WIDTH - 20 - colorOutlineWidth, WINDOW_HEIGHT - 20 - colorOutlineWidth, 30 + colorOutlineWidth * 2, 30 + colorOutlineWidth * 2)
@@ -203,12 +218,23 @@ function love.keypressed(key, isrepeat)
 			sX = MOUSE_X
 			sY = MOUSE_Y
 		else
-			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y)
+			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y, false)
+			startLine = false
+		end
+	elseif key == 'j' then
+		if not startLine then
+			startLine = true
+			sX = MOUSE_X
+			sY = MOUSE_Y
+		else
+			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y, true)
 			startLine = false
 		end
 	elseif key == 'd' then
 		exitDraggingMode()
 		ModeManager:setMode('Drawing')
+	elseif key == 'rshift' then
+		drawingFog = not drawingFog
 	elseif key == 'c' then
 		nextColor()
 	elseif key == 'b' then

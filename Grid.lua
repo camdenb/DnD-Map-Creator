@@ -41,9 +41,10 @@ function Grid:draw()
 			local curCell = self:getCell(x, y, true)
 			local state = Grid:getState(x, y, true)
 
-			--print(state)
-
-			if math.floor(mouseX / self.scale) == math.floor(x / self.scale) and math.floor(mouseY / self.scale) == math.floor(y / self.scale) then
+			if fog and curCell.fogged then
+				love.graphics.setColor(0, 0, 0, 130)
+				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
+			elseif math.floor(mouseX / self.scale) == math.floor(x / self.scale) and math.floor(mouseY / self.scale) == math.floor(y / self.scale) then
 				love.graphics.setColor(255, 0, 0, 30)
 				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
 
@@ -69,6 +70,10 @@ end
 
 function Grid:paint(x, y, color, erase, convertNumsToGrid)
 	self:getCell(x, y, convertNumsToGrid):paint(color, erase)
+end
+
+function Grid:paintFog(x, y, erase, convertNumsToGrid)
+	self:getCell(x, y, convertNumsToGrid):paintFog(erase)
 end
 
 function Grid:to_table()
