@@ -274,10 +274,12 @@ end
 
 function love.keyreleased(key, isrepeat)
 	if key == 'd' and not ModeManager:isMode('Dragging') then
+		TokenFactory:hideTokensIfInFog(Grid)
 		ModeManager:setMode('none')
 		mouseOldX = nil
 		mouseOldY = nil
 	elseif key == 'e' then
+		TokenFactory:hideTokensIfInFog(Grid)
 		ModeManager:setMode('none')
 		mouseOldX = nil
 		mouseOldY = nil
@@ -324,6 +326,7 @@ function exitDraggingMode()
 	ModeManager:setMode('none')
 	if selectedToken ~= nil and tokenSnapping then
 		alignTokenToGrid(selectedToken)
+		selectedToken:hideIfInFog(Grid)
 	end
 end
 

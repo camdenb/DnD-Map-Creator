@@ -32,7 +32,7 @@ function TokenFactory:draw(grid)
 		--love.graphics.rectangle('fill', token.x, token.y, grid:getScale() * token.scale, grid:getScale() * token.scale)
 		local halfScale = (grid:getScale() * token.scale) / 2
 		love.graphics.circle('fill', token.x + halfScale, token.y + halfScale, halfScale)
-		love.graphics.setColor(100, 100, 100, 150)
+		love.graphics.setColor(0, 0, 0, 150)
 		love.graphics.printf(token.name, token.x, token.y + grid:getScale() * token.scale, grid:getScale() * token.scale, 'center')
 	end
 end
@@ -48,6 +48,11 @@ function TokenFactory:tokensToString()
 	print(tokenStr)
 end
 
+function TokenFactory:hideTokensIfInFog(grid)
+	for i, token in ipairs(self.tokens) do
+		token:hideIfInFog(grid)
+	end
+end
 
 
 
