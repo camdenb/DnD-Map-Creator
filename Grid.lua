@@ -34,6 +34,7 @@ function Grid:initGrid()
 end
 
 function Grid:draw()
+	love.graphics.setBackgroundColor(150, 150, 150)
 	for x = 0, (self.gridSize - 1) * self.scale, self.scale do
 		for y = 0, (self.gridSize - 1) * self.scale, self.scale do
 			local mouseX, mouseY = camera:mousepos()
@@ -41,21 +42,52 @@ function Grid:draw()
 			local curCell = self:getCell(x, y, true)
 			local state = Grid:getState(x, y, true)
 
-			if fog and curCell.fogged then
-				love.graphics.setColor(0, 0, 0, 130)
-				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
-			elseif math.floor(mouseX / self.scale) == math.floor(x / self.scale) and math.floor(mouseY / self.scale) == math.floor(y / self.scale) then
+			if math.floor(mouseX / self.scale) == math.floor(x / self.scale) and math.floor(mouseY / self.scale) == math.floor(y / self.scale) then
 				love.graphics.setColor(255, 0, 0, 30)
 				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
+			elseif curCell.fogged and fog then
+				if state == 1 then
+					local c = curCell.color
+					love.graphics.setColor(c[1], c[2], c[3], fogOpacity)
+					love.graphics.rectangle('fill', x, y, self.scale, self.scale)
+				elseif state == 0 then
 
-			elseif state == 1 then
-				love.graphics.setColor(curCell.color)
-				love.graphics.rectangle('fill', x, y, self.scale, self.scale)
-
-			elseif state == 0 and self.bGridLines then
-				love.graphics.setColor(100, 100, 100, 10)
-				love.graphics.rectangle('line', x, y, self.scale, self.scale)
+				end
+			else
+				if state == 1 then
+					love.graphics.setColor(curCell.color)
+					love.graphics.rectangle('fill', x, y, self.scale, self.scale)
+				elseif state == 0 then
+					love.graphics.setColor(255, 255, 255)
+					love.graphics.rectangle('fill', x, y, self.scale, self.scale)
+					love.graphics.setColor(255, 100, 100, 10)
+					love.graphics.rectangle('line', x, y, self.scale, self.scale)
+				end
 			end
+
+
+			-- elseif state == 1 then
+			-- 	local color = curCell.color
+
+			-- 	if fog and curCell.fogged then
+			-- 		color[4] = 0
+			-- 		color = {255, 0, 0, 255}
+			-- 	else
+			-- 		color[4] = 255	
+			-- 		love.graphics.setColor(color)
+			-- 		love.graphics.rectangle('fill', x, y, self.scale, self.scale)
+			-- 	end
+
+			-- elseif state == 0 and self.bGridLines then
+
+			-- 	if not curCell.fogged then
+			-- 		love.graphics.setColor(200, 200, 200)
+			-- 		love.graphics.rectangle('fill', x, y, self.scale, self.scale)
+			-- 	end
+
+			-- 	love.graphics.setColor(255, 100, 100, 10)
+			-- 	love.graphics.rectangle('line', x, y, self.scale, self.scale)
+			-- end
 		end
 	end
 end
@@ -70,10 +102,6 @@ end
 
 function Grid:paint(x, y, color, erase, convertNumsToGrid)
 	self:getCell(x, y, convertNumsToGrid):paint(color, erase)
-end
-
-function Grid:paintFog(x, y, erase, convertNumsToGrid)
-	self:getCell(x, y, convertNumsToGrid):paintFog(erase)
 end
 
 function Grid:to_table()

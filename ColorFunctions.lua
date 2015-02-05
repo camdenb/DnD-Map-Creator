@@ -41,3 +41,32 @@ function stringToColor(str)
     return color
 
 end
+
+function multiplyColors(c1, c2)
+    local newColor = {}
+
+    newColor[1] = math.floor((c1[1] * c2[1]) / 255)
+    newColor[2] = math.floor((c1[2] * c2[2]) / 255)
+    newColor[3] = math.floor((c1[3] * c2[3]) / 255)
+
+    return newColor
+
+end
+
+function darkenColors(c1, c2)
+    local newColor = {}
+
+    newColor[1] = math.min(c1[1], c2[1])
+    newColor[2] = math.min(c1[2], c2[2])
+    newColor[3] = math.min(c1[3], c2[3])
+    
+    return newColor
+end
+
+
+
+
+
+
+
+

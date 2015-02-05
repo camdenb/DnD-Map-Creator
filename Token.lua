@@ -56,8 +56,8 @@ function Token:removeFogInArea(grid)
 	centerX = numToGrid(self.x) + round(self.scale / 2) - 1
 	centerY = numToGrid(self.y) + round(self.scale / 2) - 1
 
-	local radiusSquared = 49
-	local searchRadius = 7
+	local radiusSquared = 100
+	local searchRadius = 10
 
 	for x = 0 - searchRadius, self.scale - 1 + searchRadius, 1 do
 		for y = 0 - searchRadius, self.scale - 1 + searchRadius, 1 do

@@ -37,6 +37,7 @@ local currentFileIndex = 0
 local availableMaps
 
 fog = true
+fogOpacity = 0
 drawingFog = false
 
 mouseOldX, mouseOldY = nil, nil
@@ -44,7 +45,7 @@ mouseOldX, mouseOldY = nil, nil
 currentColor = 1
 
 colors = {
-	{000, 000, 000, 254},
+	{000, 000, 000, 255},
 	{100, 100, 100},
 	{200, 100, 100},
 	{100, 200, 000},
