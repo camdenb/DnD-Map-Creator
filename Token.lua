@@ -35,7 +35,7 @@ function Token:shouldBeHidden(grid)
 		end
 	end
 
-	if numFogged > maxFoggedToBeHidden then
+	if numFogged > maxFoggedToBeHidden and fog then
 		return true
 	else
 		return false
@@ -44,6 +44,7 @@ function Token:shouldBeHidden(grid)
 end
 
 function Token:hideIfInFog(grid)
+	self:removeFogInArea(grid)
 	if self:shouldBeHidden(grid) then
 		self.color[4] = 10
 	else
@@ -51,6 +52,22 @@ function Token:hideIfInFog(grid)
 	end
 end
 
+function Token:removeFogInArea(grid)
+	centerX = numToGrid(self.x) + round(self.scale / 2) - 1
+	centerY = numToGrid(self.y) + round(self.scale / 2) - 1
+
+	local radiusSquared = 49
+	local searchRadius = 7
+
+	for x = 0 - searchRadius, self.scale - 1 + searchRadius, 1 do
+		for y = 0 - searchRadius, self.scale - 1 + searchRadius, 1 do
+			curCell = grid:getCell(centerX + x, centerY + y)
+			if distSquaredBetweenGridCells(curCell, grid:getCell(centerX, centerY)) < radiusSquared then
+				curCell.fogged = false
+			end
+		end
+	end
+end
 
 
 

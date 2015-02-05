@@ -217,7 +217,12 @@ function separateTablesFromString(str)
 	return tables
 end
 
+function distSquaredBetweenGridCells(c1, c2)
 
+	--return math.abs(c1.x - c2.x) + math.abs(c1.y - c2.y)
+	return math.pow(c1.x - c2.x, 2) + math.pow(c1.y - c2.y, 2)
+
+end
 
 
 
