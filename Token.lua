@@ -54,7 +54,7 @@ function Token:hideIfInFog(grid)
 		self:removeFogInArea(grid)
 	end
 	if self:shouldBeHidden(grid) then
-		self.color[4] = 10
+		self.color[4] = 30
 	else
 		self.color[4] = 200
 	end

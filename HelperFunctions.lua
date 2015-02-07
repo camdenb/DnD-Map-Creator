@@ -111,6 +111,15 @@ function getWorldCoords(num, str)
 	end
 end
 
+function getCamCoords(num, str)
+	local x, y = camera:cameraCoords(num, num)
+	if str == 'X' then
+		return x
+	elseif str == 'Y' then
+		return y
+	end
+end
+
 function drawLine(sx, sy, ex, ey, erase)
 
 	if not checkValidityOfPoint(sx, sy) or not checkValidityOfPoint(ex, ey) then
