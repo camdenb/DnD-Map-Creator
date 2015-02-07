@@ -101,7 +101,7 @@ function getHoveredToken()
 
 	return smallestToken
 end
-
+	
 function getWorldCoords(num, str)
 	local x, y = camera:worldCoords(num, num)
 	if str == 'X' then

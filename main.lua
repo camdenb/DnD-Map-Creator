@@ -66,6 +66,9 @@ function love.load(args)
 	WINDOW_HEIGHT = 500
 	WINDOW_WIDTH = 500
 
+	tokenFont = love.graphics.newFont('lib/OpenSans-Bold.ttf', 20)
+	twelve = love.graphics.newFont(12)
+
 	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
 	love.window.setTitle('Dungeons & Dragons Map Explorer')
 
@@ -83,11 +86,11 @@ function love.load(args)
 
 	camera = Camera((Grid.gridSize / 2) * Grid:getScale(), (Grid.gridSize / 2) * Grid:getScale())
 
-	TokenFactory:addToken(10, 10, 4, {255, 200, 0, 235}, 'Yorril', true)
-	TokenFactory:addToken(10, 250, 3, {125, 125, 0, 235}, 'Kenneth', true)
-	TokenFactory:addToken(10, 250, 5, {255, 125, 0, 235}, 'Goldar', true)
-	TokenFactory:addToken(10, 255, 2, {0, 255, 125, 235}, 'Felyrn', true)
-	TokenFactory:addToken(10, 255, 2, {200, 255, 125, 235}, 'Dasireth', true)
+	TokenFactory:addToken(20, 20, 4, {255, 200, 0, 235}, 'Yorril', true)
+	TokenFactory:addToken(100, 250, 3, {125, 125, 0, 235}, 'Kenneth', true)
+	TokenFactory:addToken(300, 120, 5, {255, 125, 0, 235}, 'Goldar', true)
+	TokenFactory:addToken(25, 255, 2, {0, 255, 125, 235}, 'Felyrn', true)
+	TokenFactory:addToken(120, 150, 2, {200, 255, 125, 235}, 'Dasireth', true)
 
 	-- TokenFactory:tokensToString()
 

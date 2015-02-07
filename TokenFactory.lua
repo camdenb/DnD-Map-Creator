@@ -33,7 +33,9 @@ function TokenFactory:draw(grid)
 		local halfScale = (grid:getScale() * token.scale) / 2
 		love.graphics.circle('fill', token.x + halfScale, token.y + halfScale, halfScale)
 		love.graphics.setColor(0, 0, 0, 150)
+		love.graphics.setFont(tokenFont)
 		love.graphics.printf(token.name, token.x, token.y + grid:getScale() * token.scale, grid:getScale() * token.scale, 'center')
+		love.graphics.setFont(twelve)
 	end
 end
 
@@ -68,6 +70,7 @@ function TokenFactory:deleteToken(token)
 		local t = self.tokens[i]
 		if self:areTokensEqual(t, token) then
 			table.remove(self.tokens, i)
+			print('Token Deleted: ' .. token.name)
 		end
 	end
 end
