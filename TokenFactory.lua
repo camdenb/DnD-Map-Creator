@@ -9,12 +9,12 @@ end
 
 
 
-function TokenFactory:addToken(x, y, scale, color, name)
+function TokenFactory:addToken(x, y, scale, color, name, isPlayer)
 
 	x = getWorldCoords(x, 'X')
 	y = getWorldCoords(y, 'Y')
 
-	local token = Token(x, y, scale, color, name)
+	local token = Token(x, y, scale, color, name, isPlayer)
 
 	table.insert(self.tokens, token)
 
@@ -54,8 +54,31 @@ function TokenFactory:hideTokensIfInFog(grid)
 	end
 end
 
+function TokenFactory:getTokenByName(name)
+	for i, token in ipairs(self.tokens) do
+		if name == token.name then
+			return token
+		end
+	end
+end
 
+function TokenFactory:deleteToken(token)
 
+	for i = #self.tokens, 1, -1 do
+		local t = self.tokens[i]
+		if self:areTokensEqual(t, token) then
+			table.remove(self.tokens, i)
+		end
+	end
+end
+
+function TokenFactory:areTokensEqual(t1, t2)
+	if t1.name == t2.name and t1.color == t2.color and t1.scale == t2.scale then
+		return true
+	else
+		return false
+	end
+end
 
 
 

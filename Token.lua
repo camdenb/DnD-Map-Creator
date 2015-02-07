@@ -2,7 +2,7 @@ Token = Class{}
 
 local currentID = 0
 
-function Token:init(x, y, scale, color, name)
+function Token:init(x, y, scale, color, name, isPlayer)
 
 	print('New Token: ' .. name)
 
@@ -13,12 +13,18 @@ function Token:init(x, y, scale, color, name)
 	self.name = name
 	self.id = currentID
 	currentID = currentID + 1
+	self.isPlayer = isPlayer
 
 	self:hideIfInFog(Grid)
 	
 end
 
 function Token:shouldBeHidden(grid)
+
+	if self.isPlayer then
+		return false
+	end
+
 	gridX = numToGrid(self.x)
 	gridY = numToGrid(self.y)
 
@@ -44,7 +50,9 @@ function Token:shouldBeHidden(grid)
 end
 
 function Token:hideIfInFog(grid)
-	self:removeFogInArea(grid)
+	if self.isPlayer then
+		self:removeFogInArea(grid)
+	end
 	if self:shouldBeHidden(grid) then
 		self.color[4] = 10
 	else

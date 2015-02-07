@@ -4,6 +4,7 @@ Timer = require 'lib/hump-master/timer'
 Lube = require 'lib/lube/lube'
 
 require 'lib/Tserial'
+loveframes = require 'lib.loveframes'
 
 require 'Grid'
 require 'Token'
@@ -15,6 +16,7 @@ require 'Networking'
 require 'NetworkFunctions'
 require 'Client'
 require 'Server'
+require 'GUI'
 
 -- print(separateTablesFromString('{1,2,3}{2,3,14,1412}')[2][4])
 
@@ -36,8 +38,12 @@ local selectingFile = false
 local currentFileIndex = 0
 local availableMaps
 
+gamePaused = false
+
+button = nil
+
 fog = true
-fogOpacity = 0
+fogOpacity = 50
 drawingFog = false
 
 mouseOldX, mouseOldY = nil, nil
@@ -68,6 +74,7 @@ function love.load(args)
 	Network:connect()
 
 	Grid = Grid()
+	GUI = GUI()
 
 	ModeManager = ModeManager()
 
@@ -76,11 +83,11 @@ function love.load(args)
 
 	camera = Camera((Grid.gridSize / 2) * Grid:getScale(), (Grid.gridSize / 2) * Grid:getScale())
 
-	TokenFactory:addToken(10, 10, 4, {255, 200, 0, 235}, 'Yorril')
-	TokenFactory:addToken(10, 250, 3, {125, 125, 0, 235}, 'Kenneth')
-	TokenFactory:addToken(10, 250, 5, {255, 125, 0, 235}, 'Goldar')
-	TokenFactory:addToken(10, 255, 2, {0, 255, 125, 235}, 'Felyrn')
-	TokenFactory:addToken(10, 255, 2, {200, 255, 125, 235}, 'Dasireth')
+	TokenFactory:addToken(10, 10, 4, {255, 200, 0, 235}, 'Yorril', true)
+	TokenFactory:addToken(10, 250, 3, {125, 125, 0, 235}, 'Kenneth', true)
+	TokenFactory:addToken(10, 250, 5, {255, 125, 0, 235}, 'Goldar', true)
+	TokenFactory:addToken(10, 255, 2, {0, 255, 125, 235}, 'Felyrn', true)
+	TokenFactory:addToken(10, 255, 2, {200, 255, 125, 235}, 'Dasireth', true)
 
 	-- TokenFactory:tokensToString()
 
@@ -97,60 +104,67 @@ end
 
 function love.update(dt)
 
+	loveframes.update(dt)
+
 	Network:update(dt)
 
-   if dt < 1/30 then
-      love.timer.sleep(1/30 - dt)
-   end
+	if dt < 1/30 then
+		love.timer.sleep(1/30 - dt)
+   	end
 
-	MOUSE_X, MOUSE_Y = camera:mousepos()
+   	MOUSE_X, MOUSE_Y = camera:mousepos()
 
-	hoveredToken = getHoveredToken()
+   	if not gamePaused then
 
-	if ModeManager:isMode('Dragging') then
-		selectedToken.x = MOUSE_X - dragDiffX
-		selectedToken.y = MOUSE_Y - dragDiffY
-	end
+		hoveredToken = getHoveredToken()
 
-	if ModeManager:isMode('Drawing') then
-		paint(MOUSE_X, MOUSE_Y, false)
-		if mouseOldX == nil or mouseOldY == nil then
-			mouseOldX = MOUSE_X
-			mouseOldY = MOUSE_Y
-		elseif numToGrid(mouseOldX) ~= numToGrid(MOUSE_X) or numToGrid(mouseOldY) ~= numToGrid(MOUSE_Y) then
-			drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
-		end
-			mouseOldX = MOUSE_X
-			mouseOldY = MOUSE_Y
-	elseif ModeManager:isMode('Erasing') then
-		paint(MOUSE_X, MOUSE_Y, true)
-		if mouseOldX == nil or mouseOldY == nil then
-			mouseOldX = MOUSE_X
-			mouseOldY = MOUSE_Y
-		end
-			drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y, true)
-			mouseOldX = MOUSE_X
-			mouseOldY = MOUSE_Y
-	end
-
-	if love.keyboard.isDown('lshift') then
-		local camX, camY = camera:cameraCoords(MOUSE_X, MOUSE_Y)
-		if camX < round(panPercent * WINDOW_WIDTH) then
-			camera:move(-panSpeed, 0)
-		elseif camX > round((1 - panPercent) * WINDOW_WIDTH) then
-			camera:move(panSpeed, 0)
+		if ModeManager:isMode('Dragging') then
+			selectedToken.x = MOUSE_X - dragDiffX
+			selectedToken.y = MOUSE_Y - dragDiffY
 		end
 
-		if camY < round(panPercent * WINDOW_HEIGHT) then
-			camera:move(0, -panSpeed)
-		elseif camY > round((1 - panPercent) * WINDOW_HEIGHT) then
-			camera:move(0, panSpeed)
+		if ModeManager:isMode('Drawing') then
+			paint(MOUSE_X, MOUSE_Y, false)
+			if mouseOldX == nil or mouseOldY == nil then
+				mouseOldX = MOUSE_X
+				mouseOldY = MOUSE_Y
+			elseif numToGrid(mouseOldX) ~= numToGrid(MOUSE_X) or numToGrid(mouseOldY) ~= numToGrid(MOUSE_Y) then
+				drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y)
+			end
+				mouseOldX = MOUSE_X
+				mouseOldY = MOUSE_Y
+		elseif ModeManager:isMode('Erasing') then
+			paint(MOUSE_X, MOUSE_Y, true)
+			if mouseOldX == nil or mouseOldY == nil then
+				mouseOldX = MOUSE_X
+				mouseOldY = MOUSE_Y
+			end
+				drawLine(mouseOldX, mouseOldY, MOUSE_X, MOUSE_Y, true)
+				mouseOldX = MOUSE_X
+				mouseOldY = MOUSE_Y
 		end
+
+		if love.keyboard.isDown('lshift') then
+			local camX, camY = camera:cameraCoords(MOUSE_X, MOUSE_Y)
+			if camX < round(panPercent * WINDOW_WIDTH) then
+				camera:move(-panSpeed, 0)
+			elseif camX > round((1 - panPercent) * WINDOW_WIDTH) then
+				camera:move(panSpeed, 0)
+			end
+
+			if camY < round(panPercent * WINDOW_HEIGHT) then
+				camera:move(0, -panSpeed)
+			elseif camY > round((1 - panPercent) * WINDOW_HEIGHT) then
+				camera:move(0, panSpeed)
+			end
+		end
+
 	end
 
 end
 
-function love.draw(dt)
+function love.draw()
+
 
 	camera:attach()
 
@@ -158,6 +172,9 @@ function love.draw(dt)
 	TokenFactory:draw(Grid)
 
 	camera:detach()
+
+	loveframes.draw()
+
 
 	-----------------------------------------
 
@@ -202,50 +219,11 @@ end
 
 
 function love.keypressed(key, isrepeat)
-	if key == 'g' then 
-		Grid.bGridLines = not Grid.bGridLines
-	elseif key == 'l' then
-		if not startLine then
-			startLine = true
-			sX = MOUSE_X
-			sY = MOUSE_Y
-		else
-			drawLine(sX, sY, MOUSE_X, MOUSE_Y)
-			startLine = false
-		end
-	elseif key == 'k' then
-		if not startLine then
-			startLine = true
-			sX = MOUSE_X
-			sY = MOUSE_Y
-		else
-			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y, false)
-			startLine = false
-		end
-	elseif key == 'j' then
-		if not startLine then
-			startLine = true
-			sX = MOUSE_X
-			sY = MOUSE_Y
-		else
-			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y, true)
-			startLine = false
-		end
-	elseif key == 'd' then
-		exitDraggingMode()
-		ModeManager:setMode('Drawing')
-	elseif key == 'rshift' then
-		drawingFog = not drawingFog
-	elseif key == 'c' then
-		nextColor()
-	elseif key == 'b' then
-		Network:connect()
-	elseif key == 'e' then
-		ModeManager:setMode('Erasing')
-	elseif key == 'n' then
-		Grid:clearGrid()
-	elseif key == 's' then
-		saveGrid()
+
+	loveframes.keypressed(key)
+
+	if GUI.textDisabled then
+		print('text disabled')
 	elseif key == 'a' then
 		if not selectingFile then
 			selectingFile = true
@@ -256,17 +234,83 @@ function love.keypressed(key, isrepeat)
 				currentFileIndex = currentFileIndex - 1
 			end
 		end
+
+	elseif key == 'b' then
+		Network:connect()
+
+	elseif key == 'c' then
+		nextColor()
+
+	elseif key == 'd' then
+		exitDraggingMode()
+		ModeManager:setMode('Drawing')
+
+	
+	elseif key == 'e' then
+		ModeManager:setMode('Erasing')
+	
+	elseif key == 'g' then 
+		Grid.bGridLines = not Grid.bGridLines
+	
+	elseif key == 'j' then
+		if not startLine then
+			startLine = true
+			sX = MOUSE_X
+			sY = MOUSE_Y
+		else
+			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y, true)
+			startLine = false
+		end
+	
+	elseif key == 'k' then
+		if not startLine then
+			startLine = true
+			sX = MOUSE_X
+			sY = MOUSE_Y
+		else
+			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y, false)
+			startLine = false
+		end
+	
+	elseif key == 'l' then
+		if not startLine then
+			startLine = true
+			sX = MOUSE_X
+			sY = MOUSE_Y
+		else
+			drawLine(sX, sY, MOUSE_X, MOUSE_Y)
+			startLine = false
+		end
+	
+	elseif key == 'm' then
+		tokenSnapping = not tokenSnapping
+
+	elseif key == 'n' then
+		Grid:clearGrid()
+
+	elseif key == 's' then
+		saveGrid()
+
+	elseif key == 't' then
+		GUI:newTokenDialog()
+
+	elseif key == 'y' then
+		GUI:deleteTokenDialog()
+
+	elseif key == 'rshift' then
+		drawingFog = not drawingFog
+	
 	elseif key == 'return' then
 		if selectingFile then
 			loadGrid(availableMaps[currentFileIndex])
 			selectingFile = false
 			currentFileIndex = #availableMaps
 		end
-	elseif key == 'm' then
-		tokenSnapping = not tokenSnapping
+	
 	elseif key == '-' then
 		--camera:lookAt(camera:mousepos())
 		camera:zoom(0.9)
+	
 	elseif key == '=' then
 		--camera:lookAt(camera:mousepos())
 		camera:zoom(1.1)
@@ -274,6 +318,9 @@ function love.keypressed(key, isrepeat)
 end
 
 function love.keyreleased(key, isrepeat)
+
+	loveframes.keyreleased(key)
+
 	if key == 'd' and not ModeManager:isMode('Dragging') then
 		TokenFactory:hideTokensIfInFog(Grid)
 		ModeManager:setMode('none')
@@ -287,6 +334,10 @@ function love.keyreleased(key, isrepeat)
 	end
 end
 
+function love.textinput(text)
+	loveframes.textinput(text)
+end
+
 
 function paint(x, y, erase)
 	if coordToGrid(x, y) ~= nil then
@@ -295,6 +346,8 @@ function paint(x, y, erase)
 end
 
 function love.mousepressed(x, y, button)
+
+	loveframes.mousepressed(x, y, button)
 	
 	if love.keyboard.isDown('lshift') then
 		local xx, yy = camera:pos()
@@ -308,7 +361,10 @@ function love.mousepressed(x, y, button)
 
 end
 
-function love.mousereleased()
+function love.mousereleased(x, y, button)
+
+	loveframes.mousereleased(x, y, button)
+
 	ModeManager:setMode('none')
 	exitDraggingMode()
 end

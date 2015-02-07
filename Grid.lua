@@ -51,7 +51,7 @@ function Grid:draw()
 					love.graphics.setColor(c[1], c[2], c[3], fogOpacity)
 					love.graphics.rectangle('fill', x, y, self.scale, self.scale)
 				elseif state == 0 then
-
+					
 				end
 			else
 				if state == 1 then

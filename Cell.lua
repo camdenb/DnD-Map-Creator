@@ -6,6 +6,7 @@ function Cell:init(x, y, state)
 	self.state = state
 	self.color = {0,0,0}
 	self.fogged = true
+	self.fogLevel = 0
 end
 
 function Cell:getState()
