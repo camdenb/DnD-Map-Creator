@@ -30,7 +30,7 @@ function Token:shouldBeHidden(grid)
 
 	local numFogged = 0
 	local hiddenThreshold = 0.5
-	local maxFoggedToBeHidden = round(hiddenThreshold * (self.scale * self.scale))
+	local maxFoggedToBeHidden = math.floor(hiddenThreshold * (self.scale * self.scale))
 
 	for x = 0, self.scale - 1, 1 do
 		for y = 0, self.scale - 1, 1 do
