@@ -1,7 +1,9 @@
 #D&D Map Creator
 ####_Build quality D&D Battlemaps on-the-fly!_
 
-![Screenshot](pics/ss2.png)
+###**[Have a feature request or bugs to report? Just want to give me some general feedback or suggestions? Click me :)](https://docs.google.com/forms/d/1NDoWgFsHUcWuL70Hhc727EPv5_jaKcxm8cFkjT5O3KQ/viewform)**
+
+![(Outdated) Screenshot](pics/ss2.png)
 
 ##Installation
 The easiest way to install this software:
