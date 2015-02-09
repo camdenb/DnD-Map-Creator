@@ -24,6 +24,10 @@ function netDeleteToken(tokenID)
 	Network:send( Tserial.pack({ 9, tokenID }))
 end
 
+function netSetCurrentColor(colorIndex)
+	Network:send( Tserial.pack({ 10, colorIndex }))
+end
+
 function netSetDrawingFog(bool)
 	Network:send( Tserial.pack({6, bool}) )
 end

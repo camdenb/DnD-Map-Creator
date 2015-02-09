@@ -201,6 +201,9 @@ function nextColor()
 	else
 		currentColor = currentColor + 1
 	end
+
+	netSetCurrentColor(currentColor)
+
 end
 
 function separateTablesFromString(str)

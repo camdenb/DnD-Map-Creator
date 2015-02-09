@@ -77,6 +77,8 @@ function Client:receive(data)
 		elseif typeOfData == 9 then
 			local id = d[2]
 			TokenFactory:deleteToken(TokenFactory:getTokenByID(id))
+		elseif typeOfData == 10 then
+			currentColor = d[2]
 		end
 	end
 
