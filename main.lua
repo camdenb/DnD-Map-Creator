@@ -203,18 +203,18 @@ function love.draw()
 	end
 
 	if ModeManager:isMode('Drawing') then
-		if drawingFog then
-			love.graphics.print('drawing - fog', WINDOW_WIDTH - 150, 10)
-		else
-			love.graphics.print('drawing - normal', WINDOW_WIDTH - 150, 10)
-		end
+		love.graphics.print('drawing', WINDOW_WIDTH - 80, 10)
 	elseif ModeManager:isMode('Erasing') then
-		if drawingFog then
-			love.graphics.print('erasing - fog', WINDOW_WIDTH - 150, 10)
-		else
-			love.graphics.print('erasing - normal', WINDOW_WIDTH - 150, 10)
-		end
+		love.graphics.print('erasing', WINDOW_WIDTH - 80, 10)
 	end
+
+	if drawingFog then
+		love.graphics.print('fog mode', WINDOW_WIDTH - 200, 10)
+	else
+		love.graphics.print('normal mode', WINDOW_WIDTH - 200, 10)
+	end
+
+
 
 	love.graphics.setColor(0, 0, 0)
 	love.graphics.rectangle('fill', WINDOW_WIDTH - 20 - colorOutlineWidth, WINDOW_HEIGHT - 20 - colorOutlineWidth, 30 + colorOutlineWidth * 2, 30 + colorOutlineWidth * 2)
