@@ -43,3 +43,10 @@ _**Key** - Function_
 
 ####Network Functions
 - _**B** - Connects to the server (if in Client mode)_
+
+
+NOTE: To start a server, do the following:
+ - On OS X or Linux, run the following in Terminal: `path/to/love main.lua 1` (1 being the argument that enables server mode)
+ - On Windows, change the line in `main.lua` from `Network = Network('localhost', 9999, tonumber(args[2]) or 0)` to `Network = Network('localhost', 9999, 1)` then run the game as you normally would. 
+ 
+If a client is opened when a server is running, as long as both machines are on the same network, it should automatically connect to the server. If a server is opened after the client, press **B** on the client to connect. The server's screen should become tinted red to indicate connection.
