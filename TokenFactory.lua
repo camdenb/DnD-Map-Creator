@@ -64,6 +64,20 @@ function TokenFactory:getTokenByName(name)
 	end
 end
 
+function TokenFactory:getTokenByID(id)
+	for i, token in ipairs(self.tokens) do
+		if id == token.id then
+			return token
+		end
+	end
+end
+
+function TokenFactory:updateTokenPos(id, x, y)
+	local t = self:getTokenByID(id)
+	t.x = x
+	t.y = y
+end
+
 function TokenFactory:deleteToken(token)
 
 	for i = #self.tokens, 1, -1 do

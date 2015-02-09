@@ -47,6 +47,11 @@ function Client:receive(data)
 			Grid:paint(x, y, {colorR, colorG, colorB, colorA}, erase, false)
 		elseif typeOfData == 3 then
 			Grid:clearGrid()
+		elseif typeOfData == 4 then
+			local id = d[2]
+			local x = d[3]
+			local y = d[4]
+			TokenFactory:updateTokenPos(id, x, y)
 		end
 	end
 

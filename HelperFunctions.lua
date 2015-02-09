@@ -46,6 +46,7 @@ end
 function alignTokenToGrid(token)
 	token.x = roundToMultiple(token.x, round(Grid:getScale() * gridSnapRatio))
 	token.y = roundToMultiple(token.y, round(Grid:getScale() * gridSnapRatio))
+	netUpdateTokenPosition(token.id, token.x, token.y)
 end
 
 function round(num)
