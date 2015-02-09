@@ -16,6 +16,18 @@ function netUpdateTokenPosition(tokenID, newX, newY)
 	Network:send( Tserial.pack({ 4, tokenID, newX, newY }) )
 end
 
+function netAddToken(x, y, scale, color, name, isPlayer)
+	Network:send( Tserial.pack({ 8, x, y, scale, color[1], color[2], color[3], color[4], name, isPlayer }) )
+end
+
+function netDeleteToken(tokenID)
+	Network:send( Tserial.pack({ 9, tokenID }))
+end
+
+function netSetDrawingFog(bool)
+	Network:send( Tserial.pack({6, bool}) )
+end
+
 function netSetFogged(cellX, cellY, fogged)
 	Network:send( Tserial.pack({ 5, cellX, cellY, fogged }) )
 end

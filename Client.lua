@@ -57,6 +57,26 @@ function Client:receive(data)
 			local cellY = d[3]
 			local fogged = d[4]
 			Grid:getCell(cellX, cellY):setFogged(fogged)
+		elseif typeOfData == 6 then
+			local drawFog = d[2]
+			drawingFog = drawFog
+		elseif typeOfData == 7 then
+			TokenFactory:updateTokenFogEvents(Grid)
+		elseif typeOfData == 8 then
+			local x = d[2]
+			local y = d[3]
+			local scale = d[4]
+			local c1 = d[5]
+			local c2 = d[6]
+			local c3 = d[7]
+			local c4 = d[8]
+			local name = d[9]
+			local isPlayer = d[10]
+			local t = TokenFactory:addToken(x, y, scale, {c1, c2, c3, c4}, name, isPlayer)
+			TokenFactory:updateTokenPos(t.id, x, y)
+		elseif typeOfData == 9 then
+			local id = d[2]
+			TokenFactory:deleteToken(TokenFactory:getTokenByID(id))
 		end
 	end
 

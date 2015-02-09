@@ -218,6 +218,7 @@ function separateTablesFromString(str)
 	end
 
 	for i,v in ipairs(tables) do
+		print(v)
 		loadstring('newTable = ' .. v)()
 		local t = newTable
 		newTable = nil

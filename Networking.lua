@@ -31,10 +31,12 @@ end
 
 function Network:connect()
 	if self.isServerNum == 1 then
-		self.server:listen(self.port)
-		self.connected = true
+		if not self.connected then
+			self.server:listen(self.port)
+			self.connected = true
+		end
 	else
-		if(self.client:connect(self.host, self.port)) then
+		if self.client:connect(self.host, self.port) then
 			self.connected = true
 		end
 	end

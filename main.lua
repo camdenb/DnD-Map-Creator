@@ -43,7 +43,8 @@ gamePaused = false
 button = nil
 
 fog = true
-fogOpacity = 50
+fogOpacity = 0
+tokenOpacityWhenHidden = 0
 drawingFog = false
 
 mouseOldX, mouseOldY = nil, nil
@@ -98,8 +99,17 @@ function love.load(args)
 		realignTokens()
 	end
 
+	TokenFactory:updateTokenFogEvents(Grid)
+
 	availableMaps = love.filesystem.getDirectoryItems('/maps')
 	currentFileIndex = #availableMaps
+
+	if Network.isServerNum == 1 then
+		fogOpacity = 150
+		tokenOpacityWhenHidden = 70
+	end
+
+
 
 	if tonumber(args[3]) == 1 then
 		takeScreenshot()
@@ -129,7 +139,9 @@ function love.update(dt)
 		end
 
 		if ModeManager:isMode('Drawing') then
-			paint(MOUSE_X, MOUSE_Y, false)
+			if not drawingFog then 
+				paint(MOUSE_X, MOUSE_Y, false)
+			end
 			if mouseOldX == nil or mouseOldY == nil then
 				mouseOldX = MOUSE_X
 				mouseOldY = MOUSE_Y
@@ -139,7 +151,9 @@ function love.update(dt)
 				mouseOldX = MOUSE_X
 				mouseOldY = MOUSE_Y
 		elseif ModeManager:isMode('Erasing') then
-			paint(MOUSE_X, MOUSE_Y, true)
+			if not drawingFog then 
+				paint(MOUSE_X, MOUSE_Y, true)
+			end
 			if mouseOldX == nil or mouseOldY == nil then
 				mouseOldX = MOUSE_X
 				mouseOldY = MOUSE_Y
@@ -265,6 +279,7 @@ function love.keypressed(key, isrepeat)
 		else
 			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y, true)
 			netDrawRectangle(sX, sY, MOUSE_X, MOUSE_Y, true)
+			TokenFactory:updateTokenFogEvents(Grid)
 			startLine = false
 		end
 	
@@ -276,6 +291,7 @@ function love.keypressed(key, isrepeat)
 		else
 			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y, false)
 			netDrawRectangle(sX, sY, MOUSE_X, MOUSE_Y, false)
+			TokenFactory:updateTokenFogEvents(Grid)
 			startLine = false
 		end
 	
@@ -286,6 +302,7 @@ function love.keypressed(key, isrepeat)
 			sY = MOUSE_Y
 		else
 			drawLine(sX, sY, MOUSE_X, MOUSE_Y)
+			TokenFactory:updateTokenFogEvents(Grid)
 			startLine = false
 		end
 	
@@ -306,6 +323,7 @@ function love.keypressed(key, isrepeat)
 
 	elseif key == 'rshift' then
 		drawingFog = not drawingFog
+		netSetDrawingFog(drawingFog)
 	
 	elseif key == 'return' then
 		if selectingFile then
@@ -329,12 +347,12 @@ function love.keyreleased(key, isrepeat)
 	loveframes.keyreleased(key)
 
 	if key == 'd' and not ModeManager:isMode('Dragging') then
-		TokenFactory:hideTokensIfInFog(Grid)
+		TokenFactory:updateTokenFogEvents(Grid)
 		ModeManager:setMode('none')
 		mouseOldX = nil
 		mouseOldY = nil
 	elseif key == 'e' then
-		TokenFactory:hideTokensIfInFog(Grid)
+		TokenFactory:updateTokenFogEvents(Grid)
 		ModeManager:setMode('none')
 		mouseOldX = nil
 		mouseOldY = nil
@@ -390,7 +408,7 @@ function exitDraggingMode()
 	ModeManager:setMode('none')
 	if selectedToken ~= nil and tokenSnapping then
 		alignTokenToGrid(selectedToken)
-		selectedToken:hideIfInFog(Grid)
+		TokenFactory:updateTokenFogEvents(Grid)
 	end
 end
 

@@ -64,30 +64,6 @@ function Grid:draw()
 					love.graphics.rectangle('line', x, y, self.scale, self.scale)
 				end
 			end
-
-
-			-- elseif state == 1 then
-			-- 	local color = curCell.color
-
-			-- 	if fog and curCell.fogged then
-			-- 		color[4] = 0
-			-- 		color = {255, 0, 0, 255}
-			-- 	else
-			-- 		color[4] = 255	
-			-- 		love.graphics.setColor(color)
-			-- 		love.graphics.rectangle('fill', x, y, self.scale, self.scale)
-			-- 	end
-
-			-- elseif state == 0 and self.bGridLines then
-
-			-- 	if not curCell.fogged then
-			-- 		love.graphics.setColor(200, 200, 200)
-			-- 		love.graphics.rectangle('fill', x, y, self.scale, self.scale)
-			-- 	end
-
-			-- 	love.graphics.setColor(255, 100, 100, 10)
-			-- 	love.graphics.rectangle('line', x, y, self.scale, self.scale)
-			-- end
 		end
 	end
 end

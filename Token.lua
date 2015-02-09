@@ -49,12 +49,17 @@ function Token:shouldBeHidden(grid)
 
 end
 
-function Token:hideIfInFog(grid)
-	if self.isPlayer then
+function Token:updateFogEvents(grid)
+	if not self.isPlayer then
+		self:hideIfInFog(grid)
+	else
 		self:removeFogInArea(grid)
 	end
+end
+
+function Token:hideIfInFog(grid)
 	if self:shouldBeHidden(grid) then
-		self.color[4] = 30
+		self.color[4] = tokenOpacityWhenHidden
 	else
 		self.color[4] = 200
 	end
@@ -71,7 +76,6 @@ function Token:removeFogInArea(grid)
 		for y = 0 - searchRadius, self.scale - 1 + searchRadius, 1 do
 			curCell = grid:getCell(centerX + x, centerY + y)
 			if distSquaredBetweenGridCells(curCell, grid:getCell(centerX, centerY)) < radiusSquared then
-				-- curCell:setFogged(false)
 				curCell.fogged = false
 			end
 		end

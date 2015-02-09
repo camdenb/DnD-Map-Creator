@@ -25,12 +25,12 @@ end
 
 function Server:connected(id)
 	print(id)
-	love.graphics.setBackgroundColor(255,240,240)
+	--love.graphics.setBackgroundColor(255,240,240)
 end
 
 function Server:disconnected(id)
 	print(id)
-	love.graphics.setBackgroundColor(240,240,240)
+	--love.graphics.setBackgroundColor(240,240,240)
 end
 
 function Server:listen()

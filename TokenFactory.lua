@@ -14,6 +14,8 @@ function TokenFactory:addToken(x, y, scale, color, name, isPlayer)
 	x = getWorldCoords(x, 'X')
 	y = getWorldCoords(y, 'Y')
 
+	netAddToken(x, y, scale, color, name, isPlayer)
+
 	local token = Token(x, y, scale, color, name, isPlayer)
 
 	table.insert(self.tokens, token)
@@ -34,7 +36,9 @@ function TokenFactory:draw(grid)
 		love.graphics.circle('fill', token.x + halfScale, token.y + halfScale, halfScale)
 		love.graphics.setColor(0, 0, 0, 150)
 		love.graphics.setFont(tokenFont)
-		love.graphics.printf(token.name, token.x, token.y + grid:getScale() * token.scale, grid:getScale() * token.scale, 'center')
+		if Network.isServerNum == 1 or not token:shouldBeHidden(grid) then
+			love.graphics.printf(token.name, token.x, token.y + grid:getScale() * token.scale, grid:getScale() * token.scale, 'center')
+		end
 		love.graphics.setFont(twelve)
 	end
 end
@@ -50,9 +54,10 @@ function TokenFactory:tokensToString()
 	print(tokenStr)
 end
 
-function TokenFactory:hideTokensIfInFog(grid)
+function TokenFactory:updateTokenFogEvents(grid)
+	netSendSimpleType(7)
 	for i, token in ipairs(self.tokens) do
-		token:hideIfInFog(grid)
+		token:updateFogEvents(grid)
 	end
 end
 
@@ -74,11 +79,15 @@ end
 
 function TokenFactory:updateTokenPos(id, x, y)
 	local t = self:getTokenByID(id)
-	t.x = x
-	t.y = y
+	if t then	
+		t.x = x
+		t.y = y
+	end
 end
 
 function TokenFactory:deleteToken(token)
+
+	netDeleteToken(token.id)
 
 	for i = #self.tokens, 1, -1 do
 		local t = self.tokens[i]

@@ -34,7 +34,6 @@ function Cell:paint(color, erase, sendOverNet)
 	if sendOverNet == nil then
 		sendOverNet = true
 	end
-	print(sendOverNet)
 	if Network.connected and sendOverNet then
 		netPaint(self.x, self.y, erase, false, color)
 	end
@@ -47,10 +46,10 @@ function Cell:paint(color, erase, sendOverNet)
 		end
 	else
 		if erase then
-			--netSetFogged(self.x, self.y, false)
+			netSetFogged(self.x, self.y, false)
 			self:setFogged(false)
 		else
-			--netSetFogged(self.x, self.y, true)
+			netSetFogged(self.x, self.y, true)
 			self:setFogged(true)
 		end
 	end
