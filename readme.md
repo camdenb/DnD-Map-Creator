@@ -28,6 +28,7 @@ _**Key** - Function_
 - _**L** - Hit twice to draw line with currently selected color, once to choose begin point, again to choose end point_
 - _**N** - Clear the grid_
 - _**R-Shift** - Toggle fog editing_
+- _**L-Shift** - Hold and move mouse to the edge of the screen to pan the camera_
 
 ####Grid Functions
 - _**G** - Toggle gridlines_
