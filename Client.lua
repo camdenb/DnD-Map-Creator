@@ -29,22 +29,22 @@ function Client:receive(data)
 		
 	for i = 1, #separateTablesFromString(data), 1 do
 		d = separateTablesFromString(data)[i] 
-		print(d[1])
 		local typeOfData = d[1]
 
-		if typeOfData == 2 then
-			local sx = d[2]
-			local sy = d[3]
-			local ex = d[4]
-			local ey = d[5]
-			local erase = d[6]
-			drawLine(sx, sy, ex, ey)
-		elseif typeOfData == 1 then
+		if typeOfData == 1 then
 			local erase = d[2]
 			local x = d[3]
 			local y = d[4]
 			local colorR, colorG, colorB, colorA = d[5], d[6], d[7], d[8]
 			Grid:paint(x, y, {colorR, colorG, colorB, colorA}, erase, false)
+		elseif typeOfData == 2 then
+			local sx = d[2]
+			local sy = d[3]
+			local ex = d[4]
+			local ey = d[5]
+			local fill = d[6]
+			local erase = d[7]
+			drawRectangle(sx, sy, ex, ey, fill, erase)
 		elseif typeOfData == 3 then
 			Grid:clearGrid()
 		elseif typeOfData == 4 then
@@ -52,6 +52,11 @@ function Client:receive(data)
 			local x = d[3]
 			local y = d[4]
 			TokenFactory:updateTokenPos(id, x, y)
+		elseif typeOfData == 5 then
+			local cellX = d[2]
+			local cellY = d[3]
+			local fogged = d[4]
+			Grid:getCell(cellX, cellY):setFogged(fogged)
 		end
 	end
 

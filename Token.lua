@@ -71,6 +71,7 @@ function Token:removeFogInArea(grid)
 		for y = 0 - searchRadius, self.scale - 1 + searchRadius, 1 do
 			curCell = grid:getCell(centerX + x, centerY + y)
 			if distSquaredBetweenGridCells(curCell, grid:getCell(centerX, centerY)) < radiusSquared then
+				-- curCell:setFogged(false)
 				curCell.fogged = false
 			end
 		end

@@ -264,6 +264,7 @@ function love.keypressed(key, isrepeat)
 			sY = MOUSE_Y
 		else
 			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y, true)
+			netDrawRectangle(sX, sY, MOUSE_X, MOUSE_Y, true)
 			startLine = false
 		end
 	
@@ -274,6 +275,7 @@ function love.keypressed(key, isrepeat)
 			sY = MOUSE_Y
 		else
 			drawRectangle(sX, sY, MOUSE_X, MOUSE_Y, false)
+			netDrawRectangle(sX, sY, MOUSE_X, MOUSE_Y, false)
 			startLine = false
 		end
 	

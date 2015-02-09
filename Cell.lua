@@ -26,8 +26,16 @@ function Cell:setState(state)
 	
 end
 
-function Cell:paint(color, erase)
-	if Network.connected then
+function Cell:setFogged(fogged)
+	self.fogged = fogged
+end
+
+function Cell:paint(color, erase, sendOverNet)
+	if sendOverNet == nil then
+		sendOverNet = true
+	end
+	print(sendOverNet)
+	if Network.connected and sendOverNet then
 		netPaint(self.x, self.y, erase, false, color)
 	end
 	if not drawingFog then
@@ -39,9 +47,11 @@ function Cell:paint(color, erase)
 		end
 	else
 		if erase then
-			self.fogged = false
+			--netSetFogged(self.x, self.y, false)
+			self:setFogged(false)
 		else
-			self.fogged = true
+			--netSetFogged(self.x, self.y, true)
+			self:setFogged(true)
 		end
 	end
 end

@@ -185,10 +185,10 @@ function drawRectangle(sx, sy, ex, ey, fill, erase)
 	
 			if not fill then		
 				if x == startX or y == startY or x == endX or y == endY then
-					Grid:paint(round(x), round(y), colors[currentColor], erase)
+					Grid:paint(round(x), round(y), colors[currentColor], erase, false, false)
 				end
 			else
-				Grid:paint(round(x), round(y), colors[currentColor], erase)
+				Grid:paint(round(x), round(y), colors[currentColor], erase, false, false)
 			end
 
 		end

@@ -100,8 +100,8 @@ function Grid:getCell(x, y, convertNumsToGrid)
 	return self.grid[x][y]
 end
 
-function Grid:paint(x, y, color, erase, convertNumsToGrid)
-	self:getCell(x, y, convertNumsToGrid):paint(color, erase)
+function Grid:paint(x, y, color, erase, convertNumsToGrid, sendOverNet)
+	self:getCell(x, y, convertNumsToGrid):paint(color, erase, sendOverNet)
 end
 
 function Grid:to_table()
