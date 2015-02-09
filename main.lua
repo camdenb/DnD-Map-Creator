@@ -101,7 +101,9 @@ function love.load(args)
 	availableMaps = love.filesystem.getDirectoryItems('/maps')
 	currentFileIndex = #availableMaps
 
-	takeScreenshot()
+	if tonumber(args[3]) == 1 then
+		takeScreenshot()
+	end
 
 end
 
