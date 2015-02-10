@@ -60,8 +60,10 @@ function Grid:draw()
 				elseif state == 0 then
 					love.graphics.setColor(255, 255, 255)
 					love.graphics.rectangle('fill', x, y, self.scale, self.scale)
-					love.graphics.setColor(255, 100, 100, 10)
-					love.graphics.rectangle('line', x, y, self.scale, self.scale)
+					if self.bGridLines then	
+						love.graphics.setColor(255, 100, 100, 10)
+						love.graphics.rectangle('line', x, y, self.scale, self.scale)
+					end
 				end
 			end
 		end
