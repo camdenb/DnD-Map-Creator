@@ -1,5 +1,6 @@
 Class = require 'lib/hump-master/class'
 Camera = require 'lib/hump-master/camera'
+Timer = require 'lib/hump-master/timer'
 Lube = require 'lib/LUBE/LUBE'
 
 require 'lib/Tserial'
@@ -16,6 +17,7 @@ require 'NetworkFunctions'
 require 'Client'
 require 'Server'
 require 'GUI'
+require 'Message'
 
 -- print(separateTablesFromString('{1,2,3}{2,3,14,1412}')[2][4])
 
@@ -36,6 +38,8 @@ local panSpeed = 7
 local selectingFile = false
 local currentFileIndex = 0
 local availableMaps
+
+showDebugMessages = false
 
 gamePaused = false
 
@@ -67,10 +71,13 @@ function love.load(args)
 	WINDOW_WIDTH = 500
 
 	tokenFont = love.graphics.newFont('lib/OpenSans-Bold.ttf', 20)
-	twelve = love.graphics.newFont(12)
+	messageFont = love.graphics.newFont('lib/OpenSans-Light.ttf', 15)
+	debugFont = love.graphics.newFont(12)
 
 	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {resizable=true, vsync=false, fsaa=0})
 	love.window.setTitle('Dungeons & Dragons Map Explorer')
+
+	Message = Message()
 
 	Network = Network('localhost', 9999, tonumber(args[2]) or 0)
 	Network:load()
@@ -100,6 +107,8 @@ function love.load(args)
 
 	TokenFactory:updateTokenFogEvents(Grid)
 
+	love.filesystem.setIdentity('Map Explorer')
+
 	if not love.filesystem.exists('/maps') then
 		love.filesystem.createDirectory('/maps')
 	end
@@ -121,6 +130,8 @@ function love.load(args)
 end
 
 function love.update(dt)
+
+	Timer.update(dt)
 
 	loveframes.update(dt)
 
@@ -197,38 +208,41 @@ function love.draw()
 
 	loveframes.draw()
 
-
 	-----------------------------------------
 
 	love.graphics.setColor(0, 0, 0)
 
 	if hoveredToken ~= nil then
-		love.graphics.print(hoveredToken.name, 10, 10)
+		printString(hoveredToken.name, 10, 10)
 	end
 
-	love.graphics.print(math.floor(MOUSE_X) .. " " .. math.floor(MOUSE_Y), 200, 10)
-	love.graphics.print(numToGrid(MOUSE_X) .. " " .. numToGrid(MOUSE_Y), 200, 25)
+	Message:drawMessages()
+
+	love.graphics.setFont(debugFont)
+
+	printString(math.floor(MOUSE_X) .. " " .. math.floor(MOUSE_Y), 200, 10)
+	printString(numToGrid(MOUSE_X) .. " " .. numToGrid(MOUSE_Y), 200, 25)
 
 	if selectingFile and availableMaps[currentFileIndex] then
-		love.graphics.print(availableMaps[currentFileIndex], 10, WINDOW_HEIGHT - 20)
+		printString(availableMaps[currentFileIndex], 10, WINDOW_HEIGHT - 20, true)
 	end
 
 	if Network:isServer() == 1 then
-		love.graphics.print('server', 0, 0)
+		printString('server', 0, 0)
 	else
-		love.graphics.print('client', 0, 0)
+		printString('client', 0, 0)
 	end
 
 	if ModeManager:isMode('Drawing') then
-		love.graphics.print('drawing', WINDOW_WIDTH - 80, 10)
+		printString('drawing', WINDOW_WIDTH - 80, 10)
 	elseif ModeManager:isMode('Erasing') then
-		love.graphics.print('erasing', WINDOW_WIDTH - 80, 10)
+		printString('erasing', WINDOW_WIDTH - 80, 10)
 	end
 
 	if drawingFog then
-		love.graphics.print('fog mode', WINDOW_WIDTH - 200, 10)
+		printString('fog mode', WINDOW_WIDTH - 200, 10, true)
 	else
-		love.graphics.print('normal mode', WINDOW_WIDTH - 200, 10)
+		printString('normal mode', WINDOW_WIDTH - 200, 10, true)
 	end
 
 	love.graphics.setColor(0, 0, 0)
@@ -333,7 +347,7 @@ function love.keypressed(key, isrepeat)
 	
 	elseif key == 'return' then
 		if selectingFile and availableMaps[currentFileIndex] then
-			loadGrid(availableMaps[currentFileIndex])
+			loadGrid(availableMaps[currentFileIndex	])
 			selectingFile = false
 			currentFileIndex = #availableMaps
 		end

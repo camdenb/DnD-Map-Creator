@@ -39,7 +39,6 @@ function TokenFactory:draw(grid)
 		if Network.isServerNum == 1 or not token:shouldBeHidden(grid) then
 			love.graphics.printf(token.name, token.x, token.y + grid:getScale() * token.scale, grid:getScale() * token.scale, 'center')
 		end
-		love.graphics.setFont(twelve)
 	end
 end
 

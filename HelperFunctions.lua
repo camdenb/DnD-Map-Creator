@@ -1,5 +1,5 @@
 function takeScreenshot()
-	print('Took screenshot.')
+	Message:displayMessage('Took screenshot.', 1)
 	scrot = love.graphics.newScreenshot()
 	scrot:encode(os.date('%m-%d_%H-%M-%S') .. '.png', 'png')
 	--love.filesystem.write('', scrot)
@@ -7,18 +7,18 @@ end
 
 function saveTokensAndGrid()
 	local saveStr = Grid:gridToString() .. TokenFactory:tokensToString()
-	love.filesystem.write('/maps/' .. os.date('%b-%d-%Y_%I%p-%M%S') .. '.txt', saveStr)
-	print('grid saved as: ' .. os.date('%b-%d-%Y_%I%p-%M%S') .. '.txt')
+	love.filesystem.write('/maps/' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', saveStr)
+	Message:displayMessage('grid saved as: ' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', 4)
 end
 
 function saveGrid()
-	love.filesystem.write('/maps/' .. os.date('%b-%d-%Y_%I%p-%M%S') .. '.txt', Grid:gridToString())
-	print('grid saved as: ' .. os.date('%b-%d-%Y_%I%p-%M%S') .. '.txt')
+	love.filesystem.write('/maps/' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', Grid:gridToString())
+	Message:displayMessage('grid saved as: ' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', 4)
 end
 
 function loadGrid(fileString)
 	fileString = tostring(fileString)
-	print('loading ' .. fileString)
+	Message:displayMessage('loading ' .. fileString, 3)
 	local contents = love.filesystem.read('/maps/' .. fileString)
 	local len = string.len(contents)
 
@@ -238,6 +238,11 @@ function distSquaredBetweenGridCells(c1, c2)
 
 end
 
+function printString(str, x, y, ignoreHidden)
+	if showDebugMessages or ignoreHidden then
+		love.graphics.print(str, x, y)
+	end
+end
 
 
 
