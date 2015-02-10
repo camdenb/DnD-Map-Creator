@@ -231,8 +231,6 @@ function love.draw()
 		love.graphics.print('normal mode', WINDOW_WIDTH - 200, 10)
 	end
 
-
-
 	love.graphics.setColor(0, 0, 0)
 	love.graphics.rectangle('fill', WINDOW_WIDTH - 20 - colorOutlineWidth, WINDOW_HEIGHT - 20 - colorOutlineWidth, 30 + colorOutlineWidth * 2, 30 + colorOutlineWidth * 2)
 	love.graphics.setColor(colors[currentColor])
@@ -334,7 +332,7 @@ function love.keypressed(key, isrepeat)
 		netSetDrawingFog(drawingFog)
 	
 	elseif key == 'return' then
-		if selectingFile then
+		if selectingFile and availableMaps[currentFileIndex] then
 			loadGrid(availableMaps[currentFileIndex])
 			selectingFile = false
 			currentFileIndex = #availableMaps
