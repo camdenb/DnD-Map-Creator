@@ -101,6 +101,10 @@ function love.load(args)
 
 	TokenFactory:updateTokenFogEvents(Grid)
 
+	if not love.filesystem.exists('/maps') then
+		love.filesystem.createDirectory('/maps')
+	end
+
 	availableMaps = love.filesystem.getDirectoryItems('/maps')
 	currentFileIndex = #availableMaps
 
@@ -206,7 +210,7 @@ function love.draw()
 	love.graphics.print(math.floor(MOUSE_X) .. " " .. math.floor(MOUSE_Y), 200, 10)
 	love.graphics.print(numToGrid(MOUSE_X) .. " " .. numToGrid(MOUSE_Y), 200, 25)
 
-	if selectingFile then
+	if selectingFile and availableMaps[currentFileIndex] then
 		love.graphics.print(availableMaps[currentFileIndex], 10, WINDOW_HEIGHT - 20)
 	end
 
@@ -318,6 +322,7 @@ function love.keypressed(key, isrepeat)
 
 	elseif key == 's' then
 		saveGrid()
+		availableMaps = love.filesystem.getDirectoryItems('/maps')
 
 	elseif key == 't' then
 		GUI:newTokenDialog()
