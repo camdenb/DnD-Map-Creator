@@ -4,7 +4,7 @@ function netPaint(x, y, erase, convertNumsToGrid, color)
 		x = numToGrid(x)
 		y = numToGrid(y)
 	end
-	color = color or {0,0,0,0}
+	local color = color or {0,0,0,0}
 	Network:send( Tserial.pack({1, erase, x, y, color[1], color[2], color[3], color[4]}) )
 end
 

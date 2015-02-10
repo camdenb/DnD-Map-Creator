@@ -31,7 +31,7 @@ end
 
 function stringToColor(str)
 
-    color = {}
+    local color = {}
 
     color[1] = tonumber(string.sub(str, 1, 3))
     color[2] = tonumber(string.sub(str, 4, 6))

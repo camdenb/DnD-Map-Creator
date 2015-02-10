@@ -61,6 +61,8 @@ function Grid:draw()
 					love.graphics.setColor(255, 255, 255)
 					love.graphics.rectangle('fill', x, y, self.scale, self.scale)
 					if self.bGridLines then	
+						love.graphics.setLineWidth(3)
+						love.graphics.setLineStyle('rough')
 						love.graphics.setColor(255, 100, 100, 10)
 						love.graphics.rectangle('line', x, y, self.scale, self.scale)
 					end
