@@ -69,7 +69,7 @@ function love.load(args)
 	tokenFont = love.graphics.newFont('lib/OpenSans-Bold.ttf', 20)
 	twelve = love.graphics.newFont(12)
 
-	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {resizable=true})
+	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {resizable=true, vsync=false, fsaa=0})
 	love.window.setTitle('Dungeons & Dragons Map Explorer')
 
 	Network = Network('localhost', 9999, tonumber(args[2]) or 0)
