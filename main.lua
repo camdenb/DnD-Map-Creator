@@ -70,7 +70,7 @@ function love.load(args)
 	tokenFont = love.graphics.newFont('lib/OpenSans-Bold.ttf', 20)
 	twelve = love.graphics.newFont(12)
 
-	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
+	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {resizable=true})
 	love.window.setTitle('Dungeons & Dragons Map Explorer')
 
 	Network = Network('localhost', 9999, tonumber(args[2]) or 0)
@@ -236,6 +236,10 @@ function love.draw()
 	love.graphics.rectangle('fill', WINDOW_WIDTH - 20, WINDOW_HEIGHT - 20, 30, 30)
 end
 
+function love.resize(w, h)
+	WINDOW_HEIGHT = h
+	WINDOW_WIDTH = w
+end
 
 function love.keypressed(key, isrepeat)
 
