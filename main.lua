@@ -1,7 +1,7 @@
 Class = require 'lib/hump-master/class'
 Camera = require 'lib/hump-master/camera'
 Timer = require 'lib/hump-master/timer'
-Lube = require 'lib/lube/lube'
+Lube = require 'lib/LUBE/LUBE'
 
 require 'lib/Tserial'
 loveframes = require 'lib.loveframes'
