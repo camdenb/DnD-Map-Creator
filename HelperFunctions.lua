@@ -13,7 +13,7 @@ end
 
 function saveGrid()
 	--love.filesystem.write('/maps/' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', Grid:gridToString())
-	Grid:saveGridAppend()
+	Grid:saveGridWithCoords()
 	Message:displayMessage('grid saved as: ' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', 4)
 end
 
@@ -23,15 +23,17 @@ function loadGrid(fileString)
 	local contents = love.filesystem.read('/maps/' .. fileString)
 	local len = string.len(contents)
 
-	for i = 0, len - 1, 13 do
-		local x = math.floor((i / 13) / Grid.gridSize)
-		local y = (i / 13) % Grid.gridSize
+	Grid:clearGrid()
 
-		local state = Grid:setState(x, y, string.sub(contents, i + 1, i + 1), false)
-		if state == 1 then
-			Grid:paint(x, y, stringToColor(string.sub(contents, i + 2, i + 14)), false, false)
-		end
+	for i = 1, len, 20 do
+		local str = string.sub(contents, i, i + 19)
+		local x = string.sub(str, 1, 4)
+		local y = string.sub(str, 5, 8)
+		local color = string.sub(str, 9, 20)
+
+		Grid:paint(tonumber(x), tonumber(y), stringToColor(color))
 	end
+	
 end
 
 function loadTokens(tokenString)

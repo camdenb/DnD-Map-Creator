@@ -39,7 +39,7 @@ local selectingFile = false
 local currentFileIndex = 0
 local availableMaps
 
-showDebugMessages = false
+showDebugMessages = true
 
 gamePaused = false
 

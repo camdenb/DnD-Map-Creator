@@ -157,3 +157,17 @@ function Grid:saveGridAppend()
 	end
 end
 
+function Grid:saveGridWithCoords()
+	local formatStr = '/maps/' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt'
+	love.filesystem.write(formatStr, '')
+	for x = 0, self.gridSize - 1, 1 do
+		for y = 0, self.gridSize - 1, 1 do
+			local state = self:getState(x, y, false, true)
+			if state == 1 then
+				love.filesystem.append(formatStr, string.format('%04s', x) .. string.format('%04s', y) .. colorToString(self:getCell(x, y):getColor()))
+			end
+		end
+	end
+end
+
+

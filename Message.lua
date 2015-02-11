@@ -14,7 +14,6 @@ function Message:displayMessage(str, seconds)
 end
 
 function Message:cancelMessage()
-	print('canceled')
 	self.displayingMessage = false
 end
 
