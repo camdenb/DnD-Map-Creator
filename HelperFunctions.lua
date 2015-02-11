@@ -12,7 +12,8 @@ function saveTokensAndGrid()
 end
 
 function saveGrid()
-	love.filesystem.write('/maps/' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', Grid:gridToString())
+	--love.filesystem.write('/maps/' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', Grid:gridToString())
+	Grid:saveGridAppend()
 	Message:displayMessage('grid saved as: ' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', 4)
 end
 

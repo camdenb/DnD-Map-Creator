@@ -142,22 +142,18 @@ function Grid:gridToString()
 	return str
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function Grid:saveGridAppend()
+	local formatStr = '/maps/' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt'
+	love.filesystem.write(formatStr, '')
+	for x = 0, self.gridSize - 1, 1 do
+		for y = 0, self.gridSize - 1, 1 do
+			local state = self:getState(x, y, false, true)
+			if state == 0 then
+				love.filesystem.append(formatStr, state .. '000000000000')
+			elseif state == 1 then
+				love.filesystem.append(formatStr, state .. colorToString(self:getCell(x, y):getColor()))
+			end		
+		end
+	end
+end
 
