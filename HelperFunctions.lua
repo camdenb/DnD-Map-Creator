@@ -68,9 +68,9 @@ function coordInRect(x, y, rx, ry, rw, rh)
 	end
 end
 
-function numToGrid(num)
+function numToGrid(coordNum)
 	
-	return math.floor(num / Grid:getScale())
+	return math.floor(coordNum / Grid:getScale())
 
 end
 
@@ -82,7 +82,7 @@ function checkValidityOfPoint(x, y)
 	end
 end
 
-function coordToGrid(x, y)
+function getCellFromCoord(x, y)
 	if numToGrid(x) < Grid.GRID_LOWERBOUND or numToGrid(x) > Grid.GRID_UPPERBOUND or numToGrid(y) < Grid.GRID_LOWERBOUND or numToGrid(y) > Grid.GRID_UPPERBOUND then
 		return nil
 	end
@@ -106,11 +106,25 @@ function getHoveredToken()
 	return smallestToken
 end
 	
-function getWorldCoords(num, str)
+function getWorldCoords(num, str, limitToGrid)
 	local x, y = camera:worldCoords(num, num)
 	if str == 'X' then
+		if limitToGrid then
+			if numToGrid(x) >= Grid.gridSize then
+				x = Grid.gridSize * Grid:getScale() - 1
+			elseif x <= 10 then
+				x = 10
+			end
+		end
 		return x
 	elseif str == 'Y' then
+		if limitToGrid then
+			if numToGrid(y) >= Grid.gridSize then
+				y = Grid.gridSize * Grid:getScale() - 1
+			elseif y <= 10 then
+				y = 10
+			end
+		end
 		return y
 	end
 end
@@ -245,20 +259,6 @@ function printString(str, x, y, ignoreHidden)
 	if showDebugMessages or ignoreHidden then
 		love.graphics.print(str, x, y)
 	end
-end
-
-function isSquareInsideCamera(x, y, width, height)
-	local camX, camY = camera:worldCoords(0, 0)
-	local camWidth, camHeight = camera:worldCoords(WINDOW_WIDTH, WINDOW_HEIGHT)
-	camWidth = camWidth - camX
-	camHeight = camHeight - camY
-
-	if x < camX + camWidth and x + width > camX and y < camY + camHeight and y + height > camY then
-		return true
-	else
-		return false
-	end
-
 end
 
 

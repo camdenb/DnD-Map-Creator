@@ -389,7 +389,7 @@ end
 
 
 function paint(x, y, erase)
-	if coordToGrid(x, y) ~= nil then
+	if getCellFromCoord(x, y) ~= nil then
 		Grid:paint(x, y, colors[currentColor], erase, true)
 	end
 end
