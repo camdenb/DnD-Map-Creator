@@ -39,7 +39,7 @@ local selectingFile = false
 local currentFileIndex = 0
 local availableMaps
 
-showDebugMessages = true
+showDebugMessages = false
 
 gamePaused = false
 
@@ -72,8 +72,8 @@ function love.load(args)
 	WINDOW_HEIGHT = 500
 	WINDOW_WIDTH = 500
 
-	tokenFont = love.graphics.newFont('lib/OpenSans-Bold.ttf', 20)
-	messageFont = love.graphics.newFont('lib/OpenSans-Light.ttf', 15)
+	tokenFont = love.graphics.newFont('lib/SourceCodePro-Regular.otf', 20)
+	messageFont = love.graphics.newFont('lib/SourceCodePro-Regular.otf', 15)
 	debugFont = love.graphics.newFont(12)
 
 	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {resizable=true, vsync=false, fsaa=0})
@@ -214,15 +214,15 @@ function love.draw()
 
 	love.graphics.setColor(0, 0, 0)
 
-	if hoveredToken ~= nil then
-		printString(hoveredToken.name, 10, 10)
-	end
-
 	Message:drawMessages()
 
 	love.graphics.setFont(debugFont)
 
-	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
+	if hoveredToken ~= nil then
+		printString(hoveredToken.name, 10, 10)
+	end
+
+	printString("FPS: "..tostring(love.timer.getFPS( )), 10, 30)
 
 	printString(math.floor(MOUSE_X) .. " " .. math.floor(MOUSE_Y), 200, 10)
 	printString(numToGrid(MOUSE_X) .. " " .. numToGrid(MOUSE_Y), 200, 25)
@@ -238,15 +238,17 @@ function love.draw()
 	end
 
 	if ModeManager:isMode('Drawing') then
-		printString('drawing', WINDOW_WIDTH - 80, 10)
+		printString('drawing', WINDOW_WIDTH - 200, 10)
 	elseif ModeManager:isMode('Erasing') then
-		printString('erasing', WINDOW_WIDTH - 80, 10)
+		printString('erasing', WINDOW_WIDTH - 200, 10)
 	end
 
+	love.graphics.setFont(messageFont)
+
 	if drawingFog then
-		printString('fog mode', WINDOW_WIDTH - 200, 10, true)
+		printString('[Fog]', WINDOW_WIDTH - 60, 10, true)
 	else
-		printString('normal mode', WINDOW_WIDTH - 200, 10, true)
+		printString('[Nrm]', WINDOW_WIDTH - 60, 10, true)
 	end
 
 	love.graphics.setColor(0, 0, 0)

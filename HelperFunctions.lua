@@ -2,7 +2,6 @@ function takeScreenshot()
 	Message:displayMessage('Took screenshot.', 1)
 	scrot = love.graphics.newScreenshot()
 	scrot:encode(os.date('%m-%d_%H-%M-%S') .. '.png', 'png')
-	--love.filesystem.write('', scrot)
 end
 
 function saveTokensAndGrid()
@@ -14,12 +13,12 @@ end
 function saveGrid()
 	--love.filesystem.write('/maps/' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', Grid:gridToString())
 	Grid:saveGridWithCoords()
-	Message:displayMessage('grid saved as: ' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', 4)
+	Message:displayMessage('Grid saved as: ' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', 3)
 end
 
 function loadGrid(fileString)
 	fileString = tostring(fileString)
-	Message:displayMessage('loading ' .. fileString, 3)
+	Message:displayMessage('Loading ' .. fileString, 2)
 	local contents = love.filesystem.read('/maps/' .. fileString)
 	local len = string.len(contents)
 
@@ -238,7 +237,7 @@ function separateTablesFromString(str)
 	end
 
 	for i,v in ipairs(tables) do
-		print(v)
+		--print(v)
 		loadstring('newTable = ' .. v)()
 		local t = newTable
 		newTable = nil
