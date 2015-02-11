@@ -104,13 +104,3 @@ function TokenFactory:areTokensEqual(t1, t2)
 		return false
 	end
 end
-
-
-
-
-
-
-
-
-
-
