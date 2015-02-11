@@ -42,37 +42,40 @@ function Grid:draw()
 			local curCell = self:getCell(x, y, true)
 			local state = Grid:getState(x, y, true)
 
-			if curCell.fogged and fog then
-				if state == 1 then
-					local c = curCell.color
-					love.graphics.setColor(c[1], c[2], c[3], fogOpacity)
-					love.graphics.rectangle('fill', x, y, self.scale, self.scale)
-				elseif state == 0 then
-					
-				end
-			else
-				if state == 1 then
-					love.graphics.setColor(curCell.color)
-					love.graphics.rectangle('fill', x, y, self.scale, self.scale)
-				elseif state == 0 then
-					love.graphics.setColor(255, 255, 255)
-					love.graphics.rectangle('fill', x, y, self.scale, self.scale)
-					if self.bGridLines then	
-						love.graphics.setLineWidth(3)
-						love.graphics.setLineStyle('smooth')
-						love.graphics.setColor(255, 100, 100, 10)
-						love.graphics.rectangle('line', x, y, self.scale, self.scale)
+			if isSquareInsideCamera(x, y, self:getScale(), self:getScale()) then
+				if curCell.fogged and fog then
+					if state == 1 then
+						local c = curCell.color
+						love.graphics.setColor(c[1], c[2], c[3], fogOpacity)
+						love.graphics.rectangle('fill', x, y, self.scale, self.scale)
+					elseif state == 0 then
+						
+					end
+				else
+					if state == 1 then
+						love.graphics.setColor(curCell.color)
+						love.graphics.rectangle('fill', x, y, self.scale, self.scale)
+					elseif state == 0 then
+						love.graphics.setColor(255, 255, 255)
+						love.graphics.rectangle('fill', x, y, self.scale, self.scale)
+						if self.bGridLines then	
+							love.graphics.setLineWidth(3)
+							love.graphics.setLineStyle('smooth')
+							love.graphics.setColor(255, 100, 100, 10)
+							love.graphics.rectangle('line', x, y, self.scale, self.scale)
+						end
 					end
 				end
-			end
 
-			if math.floor(mouseX / self.scale) == math.floor(x / self.scale) and math.floor(mouseY / self.scale) == math.floor(y / self.scale) then
-				love.graphics.setColor(255, 0, 0, 200)
-				love.graphics.setLineWidth(2)
-				love.graphics.setLineStyle('rough')
-				love.graphics.rectangle('line', x + 1, y + 1, self.scale - 2, self.scale - 2)
+				if math.floor(mouseX / self.scale) == math.floor(x / self.scale) and math.floor(mouseY / self.scale) == math.floor(y / self.scale) then
+					love.graphics.setColor(255, 0, 0, 200)
+					love.graphics.setLineWidth(2)
+					love.graphics.setLineStyle('rough')
+					love.graphics.rectangle('line', x + 1, y + 1, self.scale - 2, self.scale - 2)
+				end
+			else
+				--print('didn\'t draw', numToGrid(x), numToGrid(y))
 			end
-
 		end
 	end
 end

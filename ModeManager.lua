@@ -26,7 +26,6 @@ function ModeManager:setMode(name)
 	local isSame = self.currentMode == ModeManager:getModeByName(name)
 	if not isSame then
 		self.currentMode = ModeManager:getModeByName(name)
-		print('Current Mode: ' .. ModeManager:getCurrentMode())
 	end
 end
 

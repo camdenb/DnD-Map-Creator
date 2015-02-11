@@ -247,7 +247,19 @@ function printString(str, x, y, ignoreHidden)
 	end
 end
 
+function isSquareInsideCamera(x, y, width, height)
+	local camX, camY = camera:worldCoords(0, 0)
+	local camWidth, camHeight = camera:worldCoords(WINDOW_WIDTH, WINDOW_HEIGHT)
+	camWidth = camWidth - camX
+	camHeight = camHeight - camY
 
+	if x < camX + camWidth and x + width > camX and y < camY + camHeight and y + height > camY then
+		return true
+	else
+		return false
+	end
+
+end
 
 
 

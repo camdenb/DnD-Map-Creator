@@ -45,10 +45,12 @@ gamePaused = false
 
 button = nil
 
-fog = true
+fog = false
 fogOpacity = 0
 tokenOpacityWhenHidden = 0
 drawingFog = false
+
+limitFPS = true
 
 mouseOldX, mouseOldY = nil, nil
 
@@ -137,7 +139,7 @@ function love.update(dt)
 
 	Network:update(dt)
 
-	if dt < 1/30 then
+	if limitFPS and dt < 1/30 then
 		love.timer.sleep(1/30 - dt)
    	end
 
@@ -219,6 +221,8 @@ function love.draw()
 	Message:drawMessages()
 
 	love.graphics.setFont(debugFont)
+
+	love.graphics.print("Current FPS: "..tostring(love.timer.getFPS( )), 10, 10)
 
 	printString(math.floor(MOUSE_X) .. " " .. math.floor(MOUSE_Y), 200, 10)
 	printString(numToGrid(MOUSE_X) .. " " .. numToGrid(MOUSE_Y), 200, 25)
