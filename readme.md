@@ -22,7 +22,8 @@ The easiest way to install this software:
 _**Key** - Function_
 
 ####Drawing/Erasing
-- _**C** - Change current color_
+- _**C** - Previous color_
+- _**V** - Next color_
 - _**D** - Hold down to draw with currently selected color_
 - _**E** - Hold down to erase_
 - _**J** - Hit twice to draw filled rectangle with currently selected color, once to choose first corner and again to choose opposite corner_
@@ -53,3 +54,4 @@ NOTE: To start a server, do the following:
  - On Windows, change the line in `main.lua` from `Network = Network('localhost', 9999, tonumber(args[2]) or 0)` to `Network = Network('localhost', 9999, 1)` then run the game as you normally would. 
  
 If a client is opened when a server is running, as long as both machines are on the same network, it should automatically connect to the server. If a server is opened after the client, press **B** on the client to connect. The server's screen should become tinted red to indicate connection.
+	

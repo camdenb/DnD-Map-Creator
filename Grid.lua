@@ -34,7 +34,7 @@ function Grid:initGrid()
 end
 
 function Grid:draw()
-	love.graphics.setBackgroundColor(150, 150, 150)
+	love.graphics.setBackgroundColor(220, 220, 220)
 	for x = roundToMultiple(getWorldCoords(0, 'X', true) - self.scale, self.scale), getWorldCoords(WINDOW_WIDTH, 'X', true), self.scale do
 		for y = roundToMultiple(getWorldCoords(0, 'Y', true) - self.scale, self.scale), getWorldCoords(WINDOW_HEIGHT, 'Y', true), self.scale do
 			

@@ -45,7 +45,7 @@ gamePaused = false
 
 button = nil
 
-fog = false
+fog = true
 fogOpacity = 0
 tokenOpacityWhenHidden = 0
 drawingFog = false
@@ -58,11 +58,17 @@ currentColor = 1
 
 colors = {
 	{000, 000, 000, 255},
-	{100, 100, 100},
-	{200, 100, 100},
-	{100, 200, 000},
-	{100, 200, 200},
-	{000, 100, 200}
+	{255, 255, 255},
+	{150, 150, 150},
+	{178, 34, 34},
+	{255, 140, 0},
+	{255, 215, 0},
+	{139, 69, 19},
+	{34, 139, 34},
+	{135, 206, 250},
+	{0, 0, 150},
+	{148, 0, 211},
+	{112, 128, 153}
 }
 
 local colorOutlineWidth = 5
@@ -139,8 +145,8 @@ function love.update(dt)
 
 	Network:update(dt)
 
-	if limitFPS and dt < 1/30 then
-		love.timer.sleep(1/30 - dt)
+	if limitFPS and dt < 1/60 then
+		love.timer.sleep(1/60 - dt)
    	end
 
    	MOUSE_X, MOUSE_Y = camera:mousepos()
@@ -228,7 +234,7 @@ function love.draw()
 	printString(numToGrid(MOUSE_X) .. " " .. numToGrid(MOUSE_Y), 200, 25)
 
 	if selectingFile and availableMaps[currentFileIndex] then
-		printString(availableMaps[currentFileIndex], 10, WINDOW_HEIGHT - 20, true)
+		printString('Map to load: ' .. availableMaps[currentFileIndex], 10, WINDOW_HEIGHT - 50, true)
 	end
 
 	if Network:isServer() == 1 then
@@ -283,7 +289,7 @@ function love.keypressed(key, isrepeat)
 		Network:connect()
 
 	elseif key == 'c' then
-		nextColor()
+		prevColor()
 
 	elseif key == 'd' then
 		exitDraggingMode()
@@ -343,6 +349,9 @@ function love.keypressed(key, isrepeat)
 
 	elseif key == 't' then
 		GUI:newTokenDialog()
+
+	elseif key == 'v' then
+		nextColor()
 
 	elseif key == 'y' then
 		GUI:deleteTokenDialog()

@@ -219,7 +219,16 @@ function nextColor()
 	end
 
 	netSetCurrentColor(currentColor)
+end
 
+function prevColor()
+	if currentColor == 1 then
+		currentColor = #colors
+	else
+		currentColor = currentColor - 1
+	end
+
+	netSetCurrentColor(currentColor)
 end
 
 function separateTablesFromString(str)
