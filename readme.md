@@ -35,7 +35,7 @@ _**Key** - Function_
 
 ####Grid Functions
 - _**G** - Toggle gridlines_
-- _**A** - Load a map, continue pressing to cycle through available maps. Press **Return** to load the selected map_
+- _**A** - Load a map_
 - _**S** - Save the current map to a file_
 - _**-** - Zoom out_
 - _**=** - Zoom in_

@@ -35,9 +35,7 @@ local hoveredToken = nil
 local panPercent = 0.2 --percent of side of screen to trigger pan
 local panSpeed = 7
 
-local selectingFile = false
-local currentFileIndex = 0
-local availableMaps
+availableMaps = {}
 
 showDebugMessages = false
 
@@ -81,6 +79,7 @@ function love.load(args)
 	tokenFont = love.graphics.newFont('lib/SourceCodePro-Regular.otf', 20)
 	messageFont = love.graphics.newFont('lib/SourceCodePro-Regular.otf', 15)
 	debugFont = love.graphics.newFont(12)
+	smallFont = love.graphics.newFont(9)
 
 	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {resizable=true, vsync=false, fsaa=0})
 	love.window.setTitle('Dungeons & Dragons Map Explorer')
@@ -122,7 +121,6 @@ function love.load(args)
 	end
 
 	availableMaps = love.filesystem.getDirectoryItems('/maps')
-	currentFileIndex = #availableMaps
 
 	if Network.isServerNum == 1 then
 		fogOpacity = 150
@@ -233,10 +231,6 @@ function love.draw()
 	printString(math.floor(MOUSE_X) .. " " .. math.floor(MOUSE_Y), 200, 10)
 	printString(numToGrid(MOUSE_X) .. " " .. numToGrid(MOUSE_Y), 200, 25)
 
-	if selectingFile and availableMaps[currentFileIndex] then
-		printString('Map to load: ' .. availableMaps[currentFileIndex], 10, WINDOW_HEIGHT - 50, true)
-	end
-
 	if Network:isServer() == 1 then
 		printString('server', 0, 0)
 	else
@@ -275,15 +269,7 @@ function love.keypressed(key, isrepeat)
 	if GUI.textDisabled then
 		print('text disabled')
 	elseif key == 'a' then
-		if not selectingFile then
-			selectingFile = true
-		else
-			if currentFileIndex <= 1 then
-				currentFileIndex = #availableMaps
-			else
-				currentFileIndex = currentFileIndex - 1
-			end
-		end
+		GUI:loadGridDialog()
 
 	elseif key == 'b' then
 		Network:connect()
@@ -344,8 +330,7 @@ function love.keypressed(key, isrepeat)
 		Grid:clearGrid()
 
 	elseif key == 's' then
-		saveGrid()
-		availableMaps = love.filesystem.getDirectoryItems('/maps')
+		GUI:saveGridDialog()
 
 	elseif key == 't' then
 		GUI:newTokenDialog()
@@ -359,13 +344,6 @@ function love.keypressed(key, isrepeat)
 	elseif key == 'rshift' then
 		drawingFog = not drawingFog
 		netSetDrawingFog(drawingFog)
-	
-	elseif key == 'return' then
-		if selectingFile and availableMaps[currentFileIndex] then
-			loadGrid(availableMaps[currentFileIndex	])
-			selectingFile = false
-			currentFileIndex = #availableMaps
-		end
 	
 	elseif key == '-' then
 		--camera:lookAt(camera:mousepos())

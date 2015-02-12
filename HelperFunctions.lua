@@ -10,13 +10,19 @@ function saveTokensAndGrid()
 	Message:displayMessage('grid saved as: ' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', 4)
 end
 
-function saveGrid()
+function saveGrid(name)
 	--love.filesystem.write('/maps/' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', Grid:gridToString())
-	Grid:saveGridWithCoords()
-	Message:displayMessage('Grid saved as: ' .. os.date('%m-%d-%Y_%I%p-%M%S') .. '.txt', 3)
+	Grid:saveGridWithCoords(name)
+	Message:displayMessage('Grid saved as: ' .. name .. '.txt', 3)
+	availableMaps = love.filesystem.getDirectoryItems('/maps')
 end
 
 function loadGrid(fileString)
+
+	if string.sub(fileString, 1, 1) == '.' then
+		return
+	end
+
 	fileString = tostring(fileString)
 	Message:displayMessage('Loading ' .. fileString, 2)
 	local contents = love.filesystem.read('/maps/' .. fileString)
@@ -32,7 +38,7 @@ function loadGrid(fileString)
 
 		Grid:paint(tonumber(x), tonumber(y), stringToColor(color))
 	end
-	
+	Message:displayMessage('Loaded ' .. fileString, 2)
 end
 
 function loadTokens(tokenString)

@@ -188,8 +188,119 @@ function GUI:deleteTokenDialog()
 
 end
 
+function GUI:saveGridDialog()
+	
+	gamePaused = true
 
+	self.textDisabled = true
 
+	local frame = loveframes.Create("frame")
+	frame:SetName("Save Map")
+	frame:SetSize(200, 90)
+	frame:SetPos(WINDOW_WIDTH / 2 - 100, WINDOW_HEIGHT / 2 - 30)
+	frame.OnClose = function(object)
+		gamePaused = false
+		self.textDisabled = false
+	end
 
+	local textinput = loveframes.Create("textinput", frame)
+	textinput:SetPos(5, 30)
+	textinput:SetWidth(frame.width - 10)
+	textinput:SetPlaceholderText('Name of Map')
+
+	local button_save = loveframes.Create('button', frame)
+	button_save:SetPos(5, 60)
+	button_save:SetWidth(frame.width - 10)
+	button_save:SetText('Save as ' .. textinput:GetText() .. '.txt')
+
+	textinput.OnTextChanged = function()
+		print('text changed')
+		button_save:SetText('Save as ' .. textinput:GetText() .. '.txt')
+	end
+
+	textinput.OnEnter = function() 
+		gamePaused = false
+		self.textDisabled = false
+		frame:Remove()
+		saveGrid(textinput:GetText())
+	end
+
+	button_save.OnClick = function()
+		gamePaused = false
+		self.textDisabled = false
+		frame:Remove()
+		saveGrid(textinput:GetText())
+	end
+
+end
+
+function GUI:loadGridDialog()
+	
+	gamePaused = true
+
+	self.textDisabled = true
+
+	local frame = loveframes.Create("frame")
+	frame:SetName("Load Map")
+	frame:SetSize(200, 90)
+	frame:SetPos(WINDOW_WIDTH / 2 - 100, WINDOW_HEIGHT / 2 - 30 - 100)
+	frame.OnClose = function(object)
+		gamePaused = false
+		self.textDisabled = false
+	end
+
+	local multichoice = loveframes.Create("multichoice", frame)
+	multichoice:SetPos(5, 30)
+	multichoice:SetWidth(frame.width - 10 - 30)
+
+	local button_help = loveframes.Create('button', frame)
+	button_help:SetPos(frame.width - 30, 30)
+	button_help:SetText('?')
+	button_help:SetWidth(25)
+	button_help:SetClickable(false)
+	
+	local tooltip = loveframes.Create("tooltip")
+	tooltip:SetObject(button_help)
+	tooltip:SetPadding(10)
+	tooltip:SetFont(smallFont)
+	tooltip:SetOffsetX(-tooltip:GetFont():getWidth(love.filesystem.getSaveDirectory()) / 2 - 50)
+	tooltip:SetText(love.filesystem.getSaveDirectory())
+         
+	local choiceSet = false
+
+	for i,v in ipairs(availableMaps) do
+	    if string.sub(v, 1, 1) ~= '.' then
+	    	multichoice:AddChoice(v)
+	    	if not choiceSet then
+	    		multichoice:SetChoice(v)
+	    		choiceSet = true
+	    	end
+	    end
+	end
+
+	if not choiceSet then
+		gamePaused = false
+		self.textDisabled = false
+		frame:Remove()
+		Message:displayMessage('No maps found', 2)
+	end
+
+	local button_save = loveframes.Create('button', frame)
+	button_save:SetPos(5, 60)
+	button_save:SetWidth(frame.width - 10)
+	button_save:SetText('Load ' .. multichoice:GetChoice())
+
+	multichoice.OnChoiceSelected = function(object, choice)
+		button_save:SetText('Load ' .. choice)
+	end
+
+	button_save.OnClick = function()
+		gamePaused = false
+		self.textDisabled = false
+		frame:Remove()
+		loadGrid(multichoice:GetChoice())
+	end
+
+end
 
 

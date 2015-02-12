@@ -10,6 +10,7 @@ end
 function Message:displayMessage(str, seconds)
 	self.displayingMessage = true
 	self.currentMessage = str
+	Timer.clear()
 	Timer.add(seconds, function() self:cancelMessage() end)
 end
 

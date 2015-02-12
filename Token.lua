@@ -61,7 +61,7 @@ function Token:hideIfInFog(grid)
 	if self:shouldBeHidden(grid) then
 		self.color[4] = tokenOpacityWhenHidden
 	else
-		self.color[4] = 200
+		self.color[4] = 220
 	end
 end
 
