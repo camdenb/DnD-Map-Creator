@@ -31,7 +31,6 @@ _**Key** - Function_
 - _**L** - Hit twice to draw line with currently selected color, once to choose begin point, again to choose end point_
 - _**N** - Clear the grid_
 - _**R-Shift** - Toggle fog editing_
-- _**L-Shift** - Hold and move mouse to the edge of the screen to pan the camera_
 
 ####Grid Functions
 - _**G** - Toggle gridlines_
@@ -39,12 +38,13 @@ _**Key** - Function_
 - _**S** - Save the current map to a file_
 - _**-** - Zoom out_
 - _**=** - Zoom in_
+- _**L-Shift** - Hold and move mouse to the edge of the screen to pan the camera_
 
 ####Token Functions
 - _**T** - Open new token dialog_
 - _**Y** - Open token edit/delete dialog_
 - _**M** - Toggle token snapping-to-grid_
-- _**G** - Group all player tokens_
+- _**R** - Group all player tokens_
 
 ####Network Functions
 - _**B** - Connects to the server (if in Client mode)_
