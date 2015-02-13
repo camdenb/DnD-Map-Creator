@@ -32,6 +32,9 @@ gridSnapRatio = 1
 local selectedToken = nil
 local hoveredToken = nil
 
+
+lastState = nil
+
 local panPercent = 0.2 --percent of side of screen to trigger pan
 local panSpeed = 7
 
@@ -49,6 +52,8 @@ tokenOpacityWhenHidden = 0
 drawingFog = false
 
 limitFPS = true
+
+tokensGrouped = true
 
 mouseOldX, mouseOldY = nil, nil
 
@@ -100,11 +105,11 @@ function love.load(args)
 
 	camera = Camera((Grid.gridSize / 2) * Grid:getScale(), (Grid.gridSize / 2) * Grid:getScale())
 
-	TokenFactory:addToken(20, 20, 4, {255, 200, 0, 235}, 'Yorril', true)
+	TokenFactory:addToken(20, 20, 3, {255, 200, 0, 235}, 'Yorril', true)
 	TokenFactory:addToken(100, 250, 3, {125, 125, 0, 235}, 'Kenneth', true)
-	TokenFactory:addToken(300, 120, 5, {255, 125, 0, 235}, 'Goldar', true)
-	TokenFactory:addToken(25, 255, 2, {0, 255, 125, 235}, 'Felyrn', true)
-	TokenFactory:addToken(120, 150, 2, {200, 255, 125, 235}, 'Dasireth', true)
+	TokenFactory:addToken(300, 120, 3, {255, 125, 0, 235}, 'Goldar', true)
+	TokenFactory:addToken(25, 255, 3, {0, 255, 125, 235}, 'Felyrn', true)
+	TokenFactory:addToken(120, 150, 3, {200, 255, 125, 235}, 'Dasireth', true)
 
 	-- TokenFactory:tokensToString()
 
@@ -154,8 +159,14 @@ function love.update(dt)
 		hoveredToken = getHoveredToken()
 
 		if ModeManager:isMode('Dragging') then
-			selectedToken.x = MOUSE_X - dragDiffX
-			selectedToken.y = MOUSE_Y - dragDiffY
+			local newX = MOUSE_X - dragDiffX
+			local newY = MOUSE_Y - dragDiffY
+			if tokensGrouped then
+				TokenFactory:movePlayerTokens(newX, newY)
+			else
+				selectedToken.x = newX
+				selectedToken.y = newY
+			end
 		end
 
 		if ModeManager:isMode('Drawing') then
@@ -267,7 +278,7 @@ function love.keypressed(key, isrepeat)
 	loveframes.keypressed(key)
 
 	if GUI.textDisabled then
-		print('text disabled')
+
 	elseif key == 'a' then
 		GUI:loadGridDialog()
 
@@ -280,7 +291,6 @@ function love.keypressed(key, isrepeat)
 	elseif key == 'd' then
 		exitDraggingMode()
 		ModeManager:setMode('Drawing')
-
 	
 	elseif key == 'e' then
 		ModeManager:setMode('Erasing')
@@ -329,6 +339,14 @@ function love.keypressed(key, isrepeat)
 	elseif key == 'n' then
 		Grid:clearGrid()
 
+	elseif key == 'r' then
+		tokensGrouped = not tokensGrouped
+		if tokensGrouped then
+			Message:displayMessage('Tokens are now grouped')
+		else
+			Message:displayMessage('Tokens are now ungrouped')
+		end
+
 	elseif key == 's' then
 		GUI:saveGridDialog()
 
@@ -340,6 +358,9 @@ function love.keypressed(key, isrepeat)
 
 	elseif key == 'y' then
 		GUI:deleteTokenDialog()
+
+	elseif key == 'z' then
+		undo()
 
 	elseif key == 'rshift' then
 		drawingFog = not drawingFog
@@ -420,7 +441,11 @@ end
 function exitDraggingMode()
 	ModeManager:setMode('none')
 	if selectedToken ~= nil and tokenSnapping then
-		alignTokenToGrid(selectedToken)
+		if tokensGrouped then
+			TokenFactory:alignPlayersToGrid()
+		else
+			alignTokenToGrid(selectedToken)
+		end
 		TokenFactory:updateTokenFogEvents(Grid)
 	end
 end

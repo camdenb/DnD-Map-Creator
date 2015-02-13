@@ -17,15 +17,20 @@ function saveGrid(name)
 	availableMaps = love.filesystem.getDirectoryItems('/maps')
 end
 
-function loadGrid(fileString)
+function loadGrid(fileString, fromString)
 
 	if string.sub(fileString, 1, 1) == '.' then
 		return
 	end
 
-	fileString = tostring(fileString)
-	Message:displayMessage('Loading ' .. fileString, 2)
-	local contents = love.filesystem.read('/maps/' .. fileString)
+	if not fromString then
+		fileString = tostring(fileString)
+		Message:displayMessage('Loading ' .. fileString, 2)
+		contents = love.filesystem.read('/maps/' .. fileString)
+	else
+		contents = fileString
+	end
+
 	local len = string.len(contents)
 
 	Grid:clearGrid()
@@ -38,7 +43,11 @@ function loadGrid(fileString)
 
 		Grid:paint(tonumber(x), tonumber(y), stringToColor(color))
 	end
-	Message:displayMessage('Loaded ' .. fileString, 2)
+	if fromString then
+		Message:displayMessage('Undid', 1)
+	else
+		Message:displayMessage('Loaded ' .. fileString, 2)
+	end
 end
 
 function loadTokens(tokenString)
@@ -275,7 +284,9 @@ function printString(str, x, y, ignoreHidden)
 	end
 end
 
-
+function undo()
+	--loadGrid(lastState, true)
+end
 
 
 

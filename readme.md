@@ -44,6 +44,7 @@ _**Key** - Function_
 - _**T** - Open new token dialog_
 - _**Y** - Open token edit/delete dialog_
 - _**M** - Toggle token snapping-to-grid_
+- _**G** - Group all player tokens_
 
 ####Network Functions
 - _**B** - Connects to the server (if in Client mode)_

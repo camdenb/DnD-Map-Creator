@@ -104,3 +104,20 @@ function TokenFactory:areTokensEqual(t1, t2)
 		return false
 	end
 end
+
+function TokenFactory:movePlayerTokens(x, y)
+	for i,token in ipairs(self.tokens) do
+		if token.isPlayer then
+			token.x = x
+			token.y = y
+		end
+	end
+end
+
+function TokenFactory:alignPlayersToGrid()
+	for i,token in ipairs(self.tokens) do
+		if token.isPlayer then
+			alignTokenToGrid(token)
+		end
+	end
+end
