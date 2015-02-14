@@ -18,8 +18,7 @@ require 'Client'
 require 'Server'
 require 'GUI'
 require 'Message'
-
--- print(separateTablesFromString('{1,2,3}{2,3,14,1412}')[2][4])
+require 'Options'
 
 local startLine
 local sX, sY
@@ -27,7 +26,6 @@ local sX, sY
 local dragDiffX, dragDiffY = 0, 0
 
 local tokenSnapping = true
-gridSnapRatio = 1
 
 local selectedToken = nil
 local hoveredToken = nil
@@ -35,63 +33,39 @@ local hoveredToken = nil
 
 lastState = nil
 
-local panPercent = 0.2 --percent of side of screen to trigger pan
-local panSpeed = 7
-
 availableMaps = {}
-
-showDebugMessages = false
 
 gamePaused = false
 
-button = nil
-
-fog = true
-fogOpacity = 0
-tokenOpacityWhenHidden = 0
 drawingFog = false
 
-limitFPS = true
-
-tokensGrouped = true
+tokensGrouped = false
 
 mouseOldX, mouseOldY = nil, nil
 
 currentColor = 1
 
-colors = {
-	{000, 000, 000, 255},
-	{255, 255, 255},
-	{150, 150, 150},
-	{178, 34, 34},
-	{255, 140, 0},
-	{255, 215, 0},
-	{139, 69, 19},
-	{34, 139, 34},
-	{135, 206, 250},
-	{0, 0, 150},
-	{148, 0, 211},
-	{112, 128, 153}
-}
-
 local colorOutlineWidth = 5
 
 function love.load(args)
 
-	WINDOW_HEIGHT = 500
-	WINDOW_WIDTH = 500
+	WINDOW_HEIGHT = 750
+	WINDOW_WIDTH = 750
 
 	tokenFont = love.graphics.newFont('lib/SourceCodePro-Regular.otf', 20)
 	messageFont = love.graphics.newFont('lib/SourceCodePro-Regular.otf', 15)
 	debugFont = love.graphics.newFont(12)
 	smallFont = love.graphics.newFont(9)
 
-	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {resizable=true, vsync=false, fsaa=0})
+	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {resizable=true, vsync=enableVsync, fsaa=0})
 	love.window.setTitle('Dungeons & Dragons Map Explorer')
 
 	Message = Message()
 
 	Network = Network('localhost', 9999, tonumber(args[2]) or 0)
+	if forceToServerMode then
+		Network.isServerNum = 1
+	end
 	Network:load()
 	Network:connect()
 
@@ -105,11 +79,11 @@ function love.load(args)
 
 	camera = Camera((Grid.gridSize / 2) * Grid:getScale(), (Grid.gridSize / 2) * Grid:getScale())
 
-	TokenFactory:addToken(20, 20, 3, {255, 200, 0, 235}, 'Yorril', true)
-	TokenFactory:addToken(100, 250, 3, {125, 125, 0, 235}, 'Kenneth', true)
-	TokenFactory:addToken(300, 120, 3, {255, 125, 0, 235}, 'Goldar', true)
-	TokenFactory:addToken(25, 255, 3, {0, 255, 125, 235}, 'Felyrn', true)
-	TokenFactory:addToken(120, 150, 3, {200, 255, 125, 235}, 'Dasireth', true)
+	-- TokenFactory:addToken(20, 20, 3, {255, 200, 0, 235}, 'Yorril', true)
+	-- TokenFactory:addToken(100, 250, 3, {125, 125, 0, 235}, 'Kenneth', true)
+	-- TokenFactory:addToken(300, 120, 3, {255, 125, 0, 235}, 'Goldar', true)
+	-- TokenFactory:addToken(25, 255, 3, {0, 255, 125, 235}, 'Felyrn', true)
+	-- TokenFactory:addToken(120, 150, 3, {200, 255, 125, 235}, 'Dasireth', true)
 
 	-- TokenFactory:tokensToString()
 
@@ -294,6 +268,9 @@ function love.keypressed(key, isrepeat)
 	
 	elseif key == 'e' then
 		ModeManager:setMode('Erasing')
+
+	elseif key == 'f' then
+		fogEnabled = not fogEnabled
 	
 	elseif key == 'g' then 
 		Grid.bGridLines = not Grid.bGridLines

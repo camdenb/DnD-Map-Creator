@@ -41,7 +41,7 @@ function Token:shouldBeHidden(grid)
 		end
 	end
 
-	if numFogged > maxFoggedToBeHidden and fog then
+	if numFogged > maxFoggedToBeHidden and fogEnabled then
 		return true
 	else
 		return false

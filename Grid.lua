@@ -43,7 +43,7 @@ function Grid:draw()
 			local curCell = self:getCell(x, y, true)
 			local state = Grid:getState(x, y, true)
 
-			if curCell.fogged and fog then
+			if curCell.fogged and fogEnabled then
 				if state == 1 then
 					local c = curCell.color
 					love.graphics.setColor(c[1], c[2], c[3], fogOpacity)
