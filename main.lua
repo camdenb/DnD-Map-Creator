@@ -49,8 +49,8 @@ local colorOutlineWidth = 5
 
 function love.load(args)
 
-	WINDOW_HEIGHT = 750
-	WINDOW_WIDTH = 750
+	WINDOW_HEIGHT = 500
+	WINDOW_WIDTH = 500
 
 	tokenFont = love.graphics.newFont('lib/SourceCodePro-Regular.otf', 20)
 	messageFont = love.graphics.newFont('lib/SourceCodePro-Regular.otf', 15)
@@ -58,7 +58,6 @@ function love.load(args)
 	smallFont = love.graphics.newFont(9)
 
 	love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT, {resizable=true, vsync=enableVsync, fsaa=0})
-	love.window.setTitle('Dungeons & Dragons Map Explorer')
 
 	Message = Message()
 
@@ -68,6 +67,15 @@ function love.load(args)
 	end
 	Network:load()
 	Network:connect()
+
+	local networkTypeString = ''
+	if Network.isServerNum == 1 then
+		networkTypeString = 'Server'
+	else
+		networkTypeString = 'Client'
+	end
+
+	love.window.setTitle('Dungeons & Dragons Map Explorer - ' .. networkTypeString)
 
 	Grid = Grid()
 	GUI = GUI()
@@ -111,7 +119,6 @@ function love.load(args)
 	if tonumber(args[3]) == 1 then
 		takeScreenshot()
 	end
-
 end
 
 function love.update(dt)
@@ -184,7 +191,6 @@ function love.update(dt)
 		end
 
 	end
-
 end
 
 function love.draw()
@@ -344,12 +350,12 @@ function love.keypressed(key, isrepeat)
 		netSetDrawingFog(drawingFog)
 	
 	elseif key == '-' then
-		--camera:lookAt(camera:mousepos())
-		camera:zoom(0.9)
+		netSendSimpleType(12)
+		zoomOut()
 	
 	elseif key == '=' then
-		--camera:lookAt(camera:mousepos())
-		camera:zoom(1.1)
+		netSendSimpleType(11)
+		zoomIn()
 	end
 end
 
@@ -367,18 +373,13 @@ function love.keyreleased(key, isrepeat)
 		ModeManager:setMode('none')
 		mouseOldX = nil
 		mouseOldY = nil
+	elseif key == 'lshift' then
+		netSendCameraPosition(camera:worldCoords(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
 	end
 end
 
 function love.textinput(text)
 	loveframes.textinput(text)
-end
-
-
-function paint(x, y, erase)
-	if getCellFromCoord(x, y) ~= nil then
-		Grid:paint(x, y, colors[currentColor], erase, true)
-	end
 end
 
 function love.mousepressed(x, y, button)
@@ -392,9 +393,6 @@ function love.mousepressed(x, y, button)
 		selectedToken = getHoveredToken()
 		enterDraggingMode(MOUSE_X, MOUSE_Y)
 	end
-
-	
-
 end
 
 function love.mousereleased(x, y, button)

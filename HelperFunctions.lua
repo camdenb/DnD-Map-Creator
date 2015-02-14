@@ -288,8 +288,19 @@ function undo()
 	--loadGrid(lastState, true)
 end
 
+function paint(x, y, erase)
+	if getCellFromCoord(x, y) ~= nil then
+		Grid:paint(x, y, colors[currentColor], erase, true)
+	end
+end
 
+function zoomIn()
+	camera:zoom(1.1)
+end
 
+function zoomOut()
+	camera:zoom(0.9)
+end
 
 
 

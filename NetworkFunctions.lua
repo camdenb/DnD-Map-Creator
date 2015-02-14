@@ -36,6 +36,10 @@ function netSetFogged(cellX, cellY, fogged)
 	Network:send( Tserial.pack({ 5, cellX, cellY, fogged }) )
 end
 
+function netSendCameraPosition(x, y)
+	Network:send( Tserial.pack({ 13, x, y }))
+end
+
 function netSendSimpleType(type)
 	Network:send( Tserial.pack( {type} ))
 end

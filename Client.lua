@@ -79,6 +79,14 @@ function Client:receive(data)
 			TokenFactory:deleteToken(TokenFactory:getTokenByID(id))
 		elseif typeOfData == 10 then
 			currentColor = d[2]
+		elseif typeOfData == 11 then
+			zoomIn()
+		elseif typeOfData == 12 then
+			zoomOut()
+		elseif typeOfData == 13 then
+			local x = d[2]
+			local y = d[3]
+			camera:lookAt(x, y)
 		end
 	end
 
