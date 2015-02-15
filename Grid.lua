@@ -85,8 +85,18 @@ function Grid:getCell(x, y, convertNumsToGrid)
 	return self.grid[x][y]
 end
 
-function Grid:paint(x, y, color, erase, convertNumsToGrid, sendOverNet)
-	self:getCell(x, y, convertNumsToGrid):paint(color, erase, sendOverNet)
+function Grid:paint(x, y, color, erase, convertNumsToGrid, sendOverNet, size)
+	local size = size or 1
+	if size <= 0 then
+		local size = 1
+	end
+
+	if size == 1 then
+		self:getCell(x, y, convertNumsToGrid):paint(color, erase, sendOverNet)
+	else
+		drawRectangle(x - numFromGrid(size - 1), y - numFromGrid(size - 1), x + numFromGrid(size - 1), y + numFromGrid(size - 1), true, erase)
+	end	
+
 end
 
 function Grid:to_table()

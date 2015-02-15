@@ -88,6 +88,10 @@ function numToGrid(coordNum)
 
 end
 
+function numFromGrid(gridNum)
+	return Grid:getScale() * gridNum
+end
+
 function checkValidityOfPoint(x, y)
 	if numToGrid(x) < Grid.GRID_LOWERBOUND or numToGrid(x) > Grid.GRID_UPPERBOUND or numToGrid(y) < Grid.GRID_LOWERBOUND or numToGrid(y) > Grid.GRID_UPPERBOUND then
 		return nil
@@ -152,7 +156,43 @@ function getCamCoords(num, str)
 	end
 end
 
-function drawLine(sx, sy, ex, ey, erase)
+function drawLine(sx, sy, ex, ey, erase, size)
+	local size = size or 1
+
+	-- for x = sx - numFromGrid(size - 1), sx + numFromGrid(size - 1), Grid:getScale() do
+	-- 	for y = sy - numFromGrid(size - 1), sy + numFromGrid(size - 1), Grid:getScale() do
+	-- 		drawLineBase(x, y, x, y, erase)
+	-- 		-- Grid:paint(x, y, {255, 0, 0}, false, true)
+	-- 		-- Grid:paint(endX, endY, {255, 255, 0}, false, true)
+	-- 	end
+	-- end
+
+	if size ~= 1 then
+		local tsx = sx - numFromGrid(size - 1)
+		local tsy = sy - numFromGrid(size - 1)
+		local tex = ex - numFromGrid(size - 1)
+		local tey = ey - numFromGrid(size - 1)
+		for i = 0, (size * 2 - 1) * 1, 1 do
+			drawLineBase(tsx, tsy, tex, tey)
+			tsx = tsx + Grid:getScale()
+			tsy = tsy + Grid:getScale()
+			tex = tex + Grid:getScale()
+			tey = tey + Grid:getScale()
+		end
+	else
+		drawLineBase(sx, sy, ex, ey, erase)
+	end
+
+	-- for x = ex - numFromGrid(size - 1), ex + numFromGrid(size - 1), Grid:getScale() do
+	-- 	for y = ey - numFromGrid(size - 1), ey + numFromGrid(size - 1), Grid:getScale() do
+	-- 		drawLineBase(x, y, ex + numFromGrid(size - 1), ey + numFromGrid(size - 1), erase)
+	-- 		--Grid:paint(x, y, {255, 0, 0}, false, true)
+	-- 	end
+	-- end
+
+end
+
+function drawLineBase(sx, sy, ex, ey, erase)
 
 	if not checkValidityOfPoint(sx, sy) or not checkValidityOfPoint(ex, ey) then
 		return nil
@@ -187,8 +227,6 @@ function drawLine(sx, sy, ex, ey, erase)
 			y = y + slopeY
 		end
 	end
-
-
 end
 
 function drawRectangle(sx, sy, ex, ey, fill, erase)
@@ -288,9 +326,9 @@ function undo()
 	--loadGrid(lastState, true)
 end
 
-function paint(x, y, erase)
+function paint(x, y, erase, size)
 	if getCellFromCoord(x, y) ~= nil then
-		Grid:paint(x, y, colors[currentColor], erase, true)
+		Grid:paint(x, y, colors[currentColor], erase, true, nil, size)
 	end
 end
 

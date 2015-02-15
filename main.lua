@@ -152,7 +152,7 @@ function love.update(dt)
 
 		if ModeManager:isMode('Drawing') then
 			if not drawingFog then 
-				paint(MOUSE_X, MOUSE_Y, false)
+				paint(MOUSE_X, MOUSE_Y, false, 1)
 			end
 			if mouseOldX == nil or mouseOldY == nil then
 				mouseOldX = MOUSE_X
