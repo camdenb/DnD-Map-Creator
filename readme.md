@@ -8,7 +8,7 @@
 ##Installation
 The easiest way to install this software:
 
-- Download the source
+- Download the source (check [the releases page](https://github.com/camdenb/DnD-Map-Creator/releases))
 - Install [LÖVE](https://love2d.org)
 - OS X and Linux
  - On the command-line, run `/path/to/love Dnd-Map-Explorer/`
